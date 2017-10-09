@@ -17,3 +17,5 @@ Given a set of tweets known to be about a given topic, estimate the distribution
 
 ## Subtask E: Tweet quantification according to a five-point scale
 Given a set of tweets known to be about a given topic, estimate the distribution of the tweets across the five classes of a five-point scale.
+
+[Evaulation Metrics for the Subtasks](http://alt.qcri.org/semeval2016/task4/data/uploads/eval.pdf)
