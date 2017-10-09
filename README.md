@@ -12,8 +12,8 @@ Given a tweet known to be about a given topic, classify whether the tweet convey
 ## Subtask C: Tweet classification according to a five-point scale
 Given a tweet known to be about a given topic, estimate the sentiment conveyed by the tweet towards the topic on a five-point scale.
 
-## Subtask D
-Tweet quantification according to a two-point scale: Given a set of tweets known to be about a given topic, estimate the distribution of the tweets across the Positive and Negative classes.
+## Subtask D: Tweet quantification according to a two-point scale
+Given a set of tweets known to be about a given topic, estimate the distribution of the tweets across the Positive and Negative classes.
 
-## Subtask E
-Tweet quantification according to a five-point scale: Given a set of tweets known to be about a given topic, estimate the distribution of the tweets across the five classes of a five-point scale.
+## Subtask E: Tweet quantification according to a five-point scale
+Given a set of tweets known to be about a given topic, estimate the distribution of the tweets across the five classes of a five-point scale.
