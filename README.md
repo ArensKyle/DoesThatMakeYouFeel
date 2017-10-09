@@ -1,7 +1,7 @@
 # DoesThatMakeYouFeel
 NLP Term Project - Task 4
 
-Task 4 is centered around Sentiment Analysis in Tweets. This task is centered around the following 4 subtasks, pulled directly from the [SemEval2016 Website] (http://alt.qcri.org/semeval2016/task4/).
+Task 4 is centered around Sentiment Analysis in Tweets. This task is centered around the following 4 subtasks, pulled directly from the [SemEval2016 Website](http://alt.qcri.org/semeval2016/task4/).
 
 ## Subtask A: Message Polarity Classification
 Given a tweet, predict whether the tweet is of positive, negative, or neutral sentiment. (This is SemEval-2015 task 10, subtask B, which we want to keep due to its popularity -- it has attracted 40 teams; however, we are retiring what was SemEval-2015 task 10, subtask A)
