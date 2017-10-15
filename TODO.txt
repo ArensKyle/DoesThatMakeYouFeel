@@ -1,0 +1,16 @@
+TODO
+
+spell check - pyenchant
+spell correct - not for presentation
+hashtag marking
+punctuation
+pos - use on eof MLTK things
+tokenizer
+	-puncuation
+	-emoticons
+conjunctions engine
+neural nets
+
+Finished
+
+remove URLs
