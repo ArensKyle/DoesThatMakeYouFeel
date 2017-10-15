@@ -10,9 +10,7 @@ unzip $DIR/data/testdata.zip -d $DIR/data
 
 F=$DIR/data/2017_English_final/DOWNLOAD
 
-cp -r $F/Subtask_A $DIR/data/
-cp -r $F/Subtasks_BD $DIR/data/
-cp -r $F/Subtasks_CE $DIR/data/
+cp -r $F/* $DIR/data/
 
 rm -r $DIR/data/2017_English_final
 rm $DIR/data/testdata.zip
