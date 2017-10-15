@@ -8,3 +8,6 @@ def massage(data, col):
         tempTweet = tweets[-1][col]
         tempTweet = re.sub("(http|https):\/\/t\..*?\s", "httpstco", tempTweet)
         #tempTweet = re.sub("([a-zA-Z])\1{2,}")
+        tweets[-1][col] = tempTweet
+
+    return tweets
