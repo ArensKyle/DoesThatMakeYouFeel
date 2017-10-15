@@ -1,14 +1,14 @@
 
-_ATTR_PTR = 0
-def new_attr():
-    global _ATTR_PTR
-    a = _ATTR_PTR
-    _ATTR_PTR = _ATTR_PTR + 1
-    return a
+_FEAT_PTR = 0
+def new_feat():
+    global _FEAT_PTR
+    feature = _FEAT_PTR
+    _FEAT_PTR = _FEAT_PTR + 1
+    return feature
 
 def attr_len():
-    global _ATTR_PTR
-    return _ATTR_PTR
+    global _FEAT_PTR
+    return _FEAT_PTR
 
 class Word:
     def __init__(self, word):
