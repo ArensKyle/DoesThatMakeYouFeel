@@ -1,5 +1,9 @@
-import massage
+import massage, sys
 
 def main():
-    datafileA = open('../data/twitter-2016dev-A.txt')
+    datafileA = open('../data/2016downloaded4-subtask A.tsv')
     taskA = massage.massage(datafileA, 2)
+    print(taskA)
+
+if __name__ == '__main__':
+    sys.exit(main())
