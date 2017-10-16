@@ -1,10 +1,14 @@
 import words
 
+import enchant
+
 SPELL_F = words.new_feat()
 QUESTION_F = words.new_feat()
 EXCLAMATION_F = words.new_feat()
 HASHTAG_F = words.new_feat()
 PERIOD_F = words.new_feat()
+
+d = enchant.Dict("en_US")
 
 def annotateTokens(tokens):
   for token in tokens:
@@ -15,6 +19,10 @@ def annotateTokens(tokens):
 def annotateHashtag(token):
   '''Take a token, and check to see if a token is a hashtag'''
   token.attrs[HASHTAG_F] = int(token.word[0] == "#" and len(token.word) > 1)
+
+def annotateSpelling(token):
+  '''Take a token, and check if is spelled correctly'''
+  token.attrs[SPELL_F] = int(d.check(token))
 
 def testAnnotate():
   token = words.Word("#test")
