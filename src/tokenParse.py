@@ -1,20 +1,38 @@
 import words
 
+import enchant
+
 SPELL_F = words.new_feat()
 QUESTION_F = words.new_feat()
 EXCLAMATION_F = words.new_feat()
 HASHTAG_F = words.new_feat()
 PERIOD_F = words.new_feat()
 
+d = enchant.Dict("en_US")
+
+
+PUNCTUATION_SEPERATORS = ['.','..','...','!','?']
+
 def annotateTokens(tokens):
+  start_punc = tokens[0]
   for token in tokens:
-    #do stuff
+    '''if token in PUNCTUATION_SEPERATORS:
+		add 1 of the punctuation to each token until you reach the beginning, or another punctuation seperator, whatever comes first
+		  Hi, I love my cat!!? She is cool!!!
+		! 2   2 2    2  2      3   3  3
+		? 1   1 1    1  1      0   0  0
+		. 0   0 0    0  0      0   0  0
+		'''
     token=token
   return tokens
 
 def annotateHashtag(token):
   '''Take a token, and check to see if a token is a hashtag'''
   token.attrs[HASHTAG_F] = int(token.word[0] == "#" and len(token.word) > 1)
+
+def annotateSpelling(token):
+  '''Take a token, and check if is spelled correctly'''
+  token.attrs[SPELL_F] = int(d.check(token))
 
 def testAnnotate():
   token = words.Word("#test")
