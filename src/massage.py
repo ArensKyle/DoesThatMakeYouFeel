@@ -1,13 +1,5 @@
+from nltk.tokenize import TweetTokenizer
 import re, nltk, words, tweet
-
-SPELL_F = words.new_feat()
-QUESTION_F = words.new_feat()
-EXCLAMATION_F = words.new_feat()
-HASHTAG_F = words.new_feat()
-PERIOD_F = words.new_feat()
-
-
-
 
 def massage(data, col):
 
@@ -30,10 +22,12 @@ def massage(data, col):
             subject = lines.split("\t")[1]
 
         w_tokens = []
+        pos_tags = nltk.pos_tag(tokens)
+        print(pos_tags)
         for w in tokens:
-            w_tokens.append(word(w))
+            w_tokens.append(words.Word(w))
 
-        tweet_obj = tweet(w_tokens, twit_id, body, sentiment, subject)
+        tweet_obj = tweet.Tweet(w_tokens, twit_id, body, sentiment, subject)
 
         tweets.append(tweet_obj)
 
