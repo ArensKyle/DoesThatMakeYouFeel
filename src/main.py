@@ -1,15 +1,24 @@
+import words_to_vectors as wtv
 import massage, sys
 
 def main():
     # Load the data files and massage
-    datafileA = open('../data/2016downloaded4-subtask A.tsv')
-    taskARet = massage.massage(datafileA, 2)
-    taskA = taskARet[0]
-    taskABoW = taskARet[1]
-    for tweet in taskA:
-        for token in tweet.tokens:
-            print(tweet.id, token.attrs, token.word)
+    datafile_A = open('../data/2016downloaded4-subtask A.tsv')
+    print("entering massage")
+    task_A_ret = massage.massage(datafile_A, 2)
+    print("leaving massage")
+    task_A = task_A_ret[0]
+    task_A_word_index = task_A_ret[1]
+    #for tweet in task_A:
+    #    for token in tweet.tokens:
+    #        print(tweet.id, token.attrs, token.word)
     # rip out relevant part for tokenizer
+
+    print("entering word to vec")
+    vector_returns_A = wtv.sig_vec(task_A, task_A_word_index)
+    print("leaving word to vec")
+    word_map_A = vector_returns_A[0]
+    feat_map_A = vector_returns_A[1]
 
 
 if __name__ == '__main__':

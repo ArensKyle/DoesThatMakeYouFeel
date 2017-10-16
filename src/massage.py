@@ -49,7 +49,7 @@ def massage(data, col):
             )
 
             # update bag of words
-            key = pos_tags[idx][0] + (pos)
+            key = pos_tags[idx][0] + "_" + (pos)
             bag_of_words[key] = bag_of_words.get(key, 0) + 1
 
 
