@@ -69,7 +69,3 @@ def create_graph(categories, vocab_size, feature_size):
             tf.zeros([categories]))
 
     return (tweet_w_input, tweet_f_input, tf.nn.softmax(tf.nn.bias_add(tf.matmul(h_pool_flat, pool_weights), pool_biases)))
-
-def optimize(graph, categories):
-    y_ = tf.placeholder(tf.float32, [None, categories])
-    return tf.reduce_mean(-tf.reduce_sum(y_ * tf.log(graph), reduction_indices=[1]))
