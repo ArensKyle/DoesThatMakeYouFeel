@@ -1,17 +1,17 @@
 TODO
 
-spell correct - not for presentation
-punctuation
-conjunctions engine
-normal neural net
+- spell correct - not for presentation
+- conjunctions engine
+- normal neural net
 
 Finished
 
-conjunction neural net
-remove URLs
-tokenizer
- -puncuation
- -emoticons
-spell check - pyenchant
-hashtag marking
-pos - use on eof NLTK things
+- conjunction neural net
+- remove URLs
+- tokenizer
+- punctuation
+- emoticons
+- spell check - pyenchant
+- hashtag marking
+- pos tagging to word index
+- punctuation
