@@ -8,13 +8,13 @@ def create_graph(categories):
     R = tf.placeholder(tf.float32, [None, categories])
     c = tf.placeholder(tf.float32, [None, cL])
     
-    LW = tf.Variable(tf.zeros([catagories, cL]))
-    RW = tf.Variable(tf.zeros([catagories, cL]))
+    LW = tf.Variable(tf.zeros([cL, categories]))
+    RW = tf.Variable(tf.zeros([cL, categories]))
     b = tf.Variable(tf.zeros([catagories]))
 
-    LWFilt = tf.matmul(LW, c, transpose_b=True)
-    RWFilt = tf.matmul(RW, c, transpose_b=True)
+    LWFilt = tf.matmul(c, LW)
+    RWFilt = tf.matmul(c, LW)
 
-    Sum = tf.matmul(L, LWFilt) + tf.matmul(R,RWFilt) + b
+    Sum = tf.multiply(L, LWFilt) + tf.multiply(R, RWFilt)
 
-    return tf.nn.softmax(Sum)
+    return tf.nn.softmax(tf.nn.bias_add(Sum, b))
