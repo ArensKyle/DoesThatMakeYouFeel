@@ -2,8 +2,9 @@ from nltk.tokenize import TweetTokenizer
 import re, nltk, words, tweet
 
 def massage(data, col):
-
+    bagOfWords = {}
     tweets = []
+    x=0
     for lines in data:
         tknzr = TweetTokenizer()
 
@@ -23,12 +24,23 @@ def massage(data, col):
 
         w_tokens = []
         pos_tags = nltk.pos_tag(tokens)
-        print(pos_tags)
-        for w in tokens:
-            w_tokens.append(words.Word(w))
+        
+        for idx in range(len(tokens)):
+            # create the Word
+            w_tokens.append(words.Word(
+                tokens[idx], # word
+                pos_tags[idx][1]) # pos
+            )
+
+            # update bag of words
+            key = pos_tags[idx][0] + (pos_tags[idx][1])
+            bagOfWords[key] = bagOfWords.get(key, 0) + 1
+
+        #for w in tokens:
+        #    w_tokens.append(words.Word(w))
 
         tweet_obj = tweet.Tweet(w_tokens, twit_id, body, sentiment, subject)
 
         tweets.append(tweet_obj)
 
-    return tweets
+    return tweets, bagOfWords

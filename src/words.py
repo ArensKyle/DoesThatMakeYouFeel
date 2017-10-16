@@ -11,6 +11,7 @@ def feat_len():
     return _FEAT_PTR
 
 class Word:
-    def __init__(self, word):
+    def __init__(self, word, pos):
         self.word = word
+        self.pos = pos
         self.attrs = [0 for x in range(feat_len())]
