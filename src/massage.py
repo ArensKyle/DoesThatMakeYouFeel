@@ -9,11 +9,15 @@ def massage(data, col):
     sig_words = {}
     tweets = []
     x=0
+    tknzr = TweetTokenizer()
     for lines in data:
-        tknzr = TweetTokenizer()
 
         #split record into tab separated values
         body = lines.split("\t")[-1]
+
+        if (body == "Not Available\n"):
+            continue
+
         body = re.sub("(http|https):\/\/t\..*?\s", "httpstco", body)
         #body = re.sub("([a-zA-Z])\1{2,}", body)
         tokens = tknzr.tokenize(body)
