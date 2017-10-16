@@ -9,7 +9,6 @@ TODO
 - set up for proof of concept run
   - training portion
   - test portion
-- 
 
 Finished
 
