@@ -6,7 +6,9 @@ def main():
     taskARet = massage.massage(datafileA, 2)
     taskA = taskARet[0]
     taskABoW = taskARet[1]
-    
+    for tweet in taskA:
+        for token in tweet.tokens:
+            print(tweet.id, token.attrs, token.word)
     # rip out relevant part for tokenizer
 
 

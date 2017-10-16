@@ -30,7 +30,7 @@ def annotateTokens(tokens):
     annotatePunctuation(idx, lastPuncGroupIdx, tokens)
 
     if (tokens[idx].word not in PUNCTUATION_SEPERATORS and idx > 0 and tokens[idx - 1].word in PUNCTUATION_SEPERATORS):
-      print("updating lastPuncGroup")
+      # print("updating lastPuncGroup")
       lastPuncGroupIdx = idx
 
 def annotatePunctuation(currentIdx, lastGroupIdx, tokens):

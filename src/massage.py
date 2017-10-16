@@ -1,4 +1,5 @@
 from nltk.tokenize import TweetTokenizer
+from tokenParse import annotateTokens
 import re, nltk, words, tweet
 
 SIGNIFICANT = 3
@@ -48,11 +49,11 @@ def massage(data, col):
         for word in bagOfWords:
             if(bagOfWords.get(word) > SIGNIFICANT):
                 sig_words[word] = word_index
-                word_index++
+                word_index += 1
 
-
+        annotateTokens(w_tokens)
         tweet_obj = tweet.Tweet(w_tokens, twit_id, body, sentiment, subject)
 
         tweets.append(tweet_obj)
 
-    return tweets, sig_Words
+    return tweets, sig_words
