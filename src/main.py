@@ -1,7 +1,12 @@
 import words_to_vectors as wtv
+import conjunction as cnj
 import massage, sys
 
 def main():
+    train()
+    test()
+
+def train():
     # Load the data files and massage
     datafile_A = open('../data/2016downloaded4-subtask A.tsv')
     print("entering massage")
@@ -9,6 +14,8 @@ def main():
     print("leaving massage")
     task_A = task_A_ret[0]
     task_A_word_index = task_A_ret[1]
+
+    
     #for tweet in task_A:
     #    for token in tweet.tokens:
     #        print(tweet.id, token.attrs, token.word)
@@ -19,6 +26,10 @@ def main():
     print("leaving word to vec")
     word_map_A = vector_returns_A[0]
     feat_map_A = vector_returns_A[1]
+
+
+def test():
+
 
 
 if __name__ == '__main__':
