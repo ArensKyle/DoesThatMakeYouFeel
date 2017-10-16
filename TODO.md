@@ -2,7 +2,14 @@ TODO
 
 - spell correct - not for presentation
 - conjunctions engine
-- normal neural net
+  - split tweets based on conjunctions
+  - parse each tweet for sentiment in the 'normal' neural net
+  - combine back together with conjunctionnet.py
+- create data pipeline
+- set up for proof of concept run
+  - training portion
+  - test portion
+- 
 
 Finished
 
@@ -15,3 +22,4 @@ Finished
 - hashtag marking
 - pos tagging to word index
 - punctuation
+- normal neural net
