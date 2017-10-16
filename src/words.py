@@ -13,4 +13,4 @@ def feat_len():
 class Word:
     def __init__(self, word):
         self.word = word
-        self.attrs = [0 for x in range(feat_len)]
+        self.attrs = [0 for x in range(feat_len())]
