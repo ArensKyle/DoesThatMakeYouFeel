@@ -9,6 +9,7 @@ TODO
 - set up for proof of concept run
   - training portion
   - test portion
+- filter out 'not availables'
 
 Finished
 
