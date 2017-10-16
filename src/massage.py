@@ -50,7 +50,9 @@ def massage(data, col):
 
 
         #turn bag of words into index of significant words for NN
-        word_index = 0
+        #word index 0 = padding
+        #word index 1 = never seen
+        word_index = 2
         for word in bag_of_words:
             if(bag_of_words.get(word) > SIGNIFICANT):
                 sig_words[word] = word_index
