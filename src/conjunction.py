@@ -42,15 +42,32 @@ def split_tweet_to_conj_tree(tweet):
                 l = last_conj
                 # we are unsure what our left is yet
                 last_conj = Conjunctive(tweet, None, element, l)
-                l.l = pool
+                l.l = Tweet(tokens=pool, twitterId=tweet.id, 
+                        sentiment=tweet.sentiment, subject=tweet.subject)
                 l.parent = last_conj
             else:
-                last_conj = Conjunctive(tweet, None, element, pool)
+                last_conj = Conjunctive(tweet, None, element, 
+                        Tweet(tokens=pool, twitterId=tweet.id,
+                            sentiment=tweet.sentiment, subject=tweet.subject))
 
             pool = [] # reset pool
+        else:
+            pool = element + pool
 
     if last_conj is None:
         return tweet
     else:
-        last_conj.l = pool
+        last_conj.l = Tweet(tokens=pool, twitterId=tweet.id, sentiment=tweet.sentiment, subject=tweet.subject)
         return last_conj
+
+def conj_classify_tweets(tweets):
+    non_conj = []
+    conj = []
+    for t in tweets:
+        split = split_tweet_to_conj_tree(t)
+        if type(split) is Conjunctive:
+            conj.append(split)
+        else:
+            non_conj.append(split)
+
+    return non_conj, conj
