@@ -16,8 +16,13 @@ PUNCTUATION_SEPERATORS = ['.','..','...','!','?']
 def annotateTokens(tokens):
   start_punc = tokens[0]
   for token in tokens:
-    #if token in PUNCTUATION_SEPERATORS:
-
+    '''if token in PUNCTUATION_SEPERATORS:
+		add 1 of the punctuation to each token until you reach the beginning, or another punctuation seperator, whatever comes first
+		  Hi, I love my cat!!? She is cool!!!
+		! 2   2 2    2  2      3   3  3
+		? 1   1 1    1  1      0   0  0
+		. 0   0 0    0  0      0   0  0
+		'''
     token=token
   return tokens
 
