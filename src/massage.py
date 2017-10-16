@@ -5,7 +5,7 @@ import re, nltk, words, tweet
 SIGNIFICANT = 3
 
 def massage(data, col):
-    bagOfWords = {}
+    bag_of_words = {}
     sig_words = {}
     tweets = []
     x=0
@@ -46,13 +46,13 @@ def massage(data, col):
 
             # update bag of words
             key = pos_tags[idx][0] + (pos)
-            bagOfWords[key] = bagOfWords.get(key, 0) + 1
+            bag_of_words[key] = bag_of_words.get(key, 0) + 1
 
 
         #turn bag of words into index of significant words for NN
         word_index = 0
-        for word in bagOfWords:
-            if(bagOfWords.get(word) > SIGNIFICANT):
+        for word in bag_of_words:
+            if(bag_of_words.get(word) > SIGNIFICANT):
                 sig_words[word] = word_index
                 word_index += 1
 
