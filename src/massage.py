@@ -1,4 +1,13 @@
-import re, nltk,
+import re, nltk, words, tweet
+
+SPELL_F = words.new_feat()
+QUESTION_F = words.new_feat()
+EXCLAMATION_F = words.new_feat()
+HASHTAG_F = words.new_feat()
+PERIOD_F = words.new_feat()
+
+
+
 
 def massage(data, col):
 
@@ -13,15 +22,19 @@ def massage(data, col):
 
         if (len(lines.split("\t")) == 3):
             sentiment = lines.split("\t")[1]
-            twitID = lines.split("\t")[0]
+            twit_id = lines.split("\t")[0]
             subject = ""
         else:
             sentiment = lines.split("\t")[2]
-            twitID = lines.split("\t")[0]
+            twit_id = lines.split("\t")[0]
             subject = lines.split("\t")[1]
 
-        tweetObj = tweet(tokens, twitID, body, sentiment, subject)
+        w_tokens = []
+        for w in tokens:
+            w_tokens.append(word(w))
 
-        tweets.append(tweetObj)
+        tweet_obj = tweet(w_tokens, twit_id, body, sentiment, subject)
+
+        tweets.append(tweet_obj)
 
     return tweets
