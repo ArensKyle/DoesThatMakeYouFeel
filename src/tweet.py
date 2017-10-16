@@ -6,3 +6,4 @@ class Tweet:
     self.literal = literal
     self.sentiment = sentiment
     self.subject = subject
+    self.punc_idx = punc_idx

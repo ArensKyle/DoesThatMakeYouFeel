@@ -26,17 +26,21 @@ def massage(data, col):
             subject = lines.split("\t")[1]
 
         w_tokens = []
+        w_punc = []
         pos_tags = nltk.pos_tag(tokens)
 
         for idx in range(len(tokens)):
+            start_punc = -1
+            pos = pos_tags[idx][1]
+
             # create the Word
             w_tokens.append(words.Word(
                 tokens[idx], # word
-                pos_tags[idx][1]) # pos
+                pos) # pos
             )
 
             # update bag of words
-            key = pos_tags[idx][0] + (pos_tags[idx][1])
+            key = pos_tags[idx][0] + (pos)
             bagOfWords[key] = bagOfWords.get(key, 0) + 1
 
 

@@ -3,28 +3,41 @@ import words
 import enchant
 
 SPELL_F = words.new_feat()
+HASHTAG_F = words.new_feat()
+
+PERIOD_F = words.new_feat()
 QUESTION_F = words.new_feat()
 EXCLAMATION_F = words.new_feat()
-HASHTAG_F = words.new_feat()
-PERIOD_F = words.new_feat()
+PERIODPERIOD_F = words.new_feat()
+ELLIPSIS_F = words.new_feat()
 
 d = enchant.Dict("en_US")
 
-
 PUNCTUATION_SEPERATORS = ['.','..','...','!','?']
+PUNCTUATION_MAPPING = {
+  ".": PERIOD_F,
+  "..": PERIODPERIOD_F,
+  "...": ELLIPSIS_F,
+  "!": EXCLAMATION_F,
+  "?": QUESTION_F
+}
 
 def annotateTokens(tokens):
-  start_punc = tokens[0]
-  for token in tokens:
-    '''if token in PUNCTUATION_SEPERATORS:
-		add 1 of the punctuation to each token until you reach the beginning, or another punctuation seperator, whatever comes first
-		  Hi, I love my cat!!? She is cool!!!
-		! 2   2 2    2  2      3   3  3
-		? 1   1 1    1  1      0   0  0
-		. 0   0 0    0  0      0   0  0
-		'''
-    token=token
-  return tokens
+  lastPuncGroupIdx = 0
+  for idx in range(len(tokens)):
+    annotateHashtag(tokens[idx])
+    annotateSpelling(tokens[idx])
+    annotatePunctuation(idx, lastPuncGroupIdx, tokens)
+
+    if (tokens[idx].word not in PUNCTUATION_SEPERATORS and idx > 0 and tokens[idx - 1].word in PUNCTUATION_SEPERATORS):
+      print("updating lastPuncGroup")
+      lastPuncGroupIdx = idx
+
+def annotatePunctuation(currentIdx, lastGroupIdx, tokens):
+  if (tokens[currentIdx].word in PUNCTUATION_SEPERATORS):
+    attr_idx = PUNCTUATION_MAPPING[tokens[currentIdx].word]
+    for idx in range(lastGroupIdx, currentIdx):
+      tokens[idx].attrs[attr_idx] += 1
 
 def annotateHashtag(token):
   '''Take a token, and check to see if a token is a hashtag'''
@@ -32,10 +45,13 @@ def annotateHashtag(token):
 
 def annotateSpelling(token):
   '''Take a token, and check if is spelled correctly'''
-  token.attrs[SPELL_F] = int(d.check(token))
+  token.attrs[SPELL_F] = int(d.check(token.word))
 
 def testAnnotate():
-  token = words.Word("#test")
-  annotateHashtag(token)
+  tokens = [words.Word("#test", 'VP'), words.Word(".",'VP'), words.Word("babe",'VP'), words.Word("!",'VP')]
+  annotateTokens(tokens)
+  print("hi")
   print(HASHTAG_F)
-  print(token.attrs)
+  print(tokens[0].attrs)
+
+# testAnnotate()
