@@ -10,9 +10,14 @@ PERIOD_F = words.new_feat()
 
 d = enchant.Dict("en_US")
 
+
+PUNCTUATION_SEPERATORS = ['.','..','...','!','?']
+
 def annotateTokens(tokens):
+  start_punc = tokens[0]
   for token in tokens:
-    #do stuff
+    #if token in PUNCTUATION_SEPERATORS:
+
     token=token
   return tokens
 
