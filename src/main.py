@@ -16,8 +16,7 @@ class Model:
         self.bag_of_words = {}
 
         self.sentinet = None
-        self.conjnet = None
-
+    
     def loadTweets(self, filenames, bag_it=False, tweets=[]):
         if type(filenames) is list:
             for f in filenames:
@@ -31,7 +30,7 @@ class Model:
                 return massage.massage(f, tweets=tweets,
                         bag_of_words=bow)
 
-        return tweets, sig_words
+        return tweets
 
     def buildWordIndexMap(self):
         self.word_index_map = {}
@@ -45,28 +44,40 @@ class Model:
                 self.word_index_map[word] = word_index
                 word_index += 1
 
-    def train(self, files):
-        tweets, sig_words = self.loadTweets(files, True)
+    def train(self, files, categories):
+        tweets = self.loadTweets(files, True)
         self.buildWordIndexMap()
 
-        tweets, conjunctives = conj_classify_tweets(tweets)
+        words, feats = wtv.sig_vec(tweets, self.word_index_map) 
 
-        # first, go through and train the main net
+        # train main net
+        with tf.Session() as sess:
+            # initialize nets
+            sess.run(tf.global_variables_initializer())
+            self.sentinet = sentimentnet.create_graph(categories, len(self.word_index_map), words.feat_len())
 
-        # DO TRAINING!!!!
-        # results will be stored in sentinet
+            tw_input, tf_input, graph = self.sentinet
 
-        # DO MORE TRAINING!!!!
-        # results will be stored in conjnet
+            expected_input, optimize_graph = netutil.optimize(graph, categories)
+            trainfn = netutil.train(optimize_graph)
 
-    def test(self, files):
-        tweets, sig_words = self.loadTweets(files, False)
+            sess.run(trainfn, feed_dict={tw_input: words, tf_input: feats, expected_input: _})
 
-        tweets, conjunctives = conj_classify_tweets(tweets)
+    def test(self, files, categories):
+        tweets = self.loadTweets(files, False)
+            
+        w_vals, f_vals = wtv.sig_vec(tweets, sig_words)
+       
+        correct_results = 0
 
-        # run tweets through batch
+        with tf.Session() as sess:
+            tw_input, tf_input, graph = self.sentinet
+        
+            y_ = tf.placeholder(tf.float32, [None, categories])
+            validation_graph = netutil.correct_prediction(graph, y_)
 
-        # flatten and run conjunctives through
+            correct_results += sess.run(validation_graph, feed_dict={tw_input: w_vals, tf_input: f_vals, y_: _})
+        print("Accuracy: {}".format(correct_results / len(tweets)))
 
 if __name__ == '__main__':
     sys.exit(main())

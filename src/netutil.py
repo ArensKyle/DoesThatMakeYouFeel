@@ -9,4 +9,4 @@ def train(loss_fn):
     return tf.train.AdamOptimizer(1e-4).minimize(loss_fn)
 
 def correct_prediction(y, y_):
-    return tf.equal(tf.argmax(y, 1), tf.argmax(y_, 1))
+    return tf.nn.in_top_k(y, y_, 1)
