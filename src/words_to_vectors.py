@@ -13,7 +13,7 @@ def sig_vec(tweets, sig_words, task):
         categories = 2
     else:
         categories = 5
-    expected_map = np.zeros([len(tweets), categories])
+    expected_map = np.zeros([len(tweets), categories], dtype=np.int32)
 
 
     tweet_index = 0
