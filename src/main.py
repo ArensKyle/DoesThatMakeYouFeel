@@ -9,14 +9,14 @@ def main():
     m = Model("A", 3)
 
     print("Beginning training")
-    m.train(["../data/Subtask_A/twitter-2016dev-A.txt"])
+    m.train(["../data/Subtask_A/twitter-2016dev-A.txt"], 50, 12)
     print("Beginning testing")
-    m.test(["../data/Subtask_A/twitter-2016devtest-A.txt"])
+    m.test(["../data/Subtask_A/twitter-2016devtest-A.txt"], 50, 12)
 
 class Model:
     def __init__(self, task, categories):
         self.task = task
-        self.categories
+        self.categories = categories
 
         self.word_index_map = {}
         self.bag_of_words = {}
@@ -28,7 +28,7 @@ class Model:
             for f in filenames:
                 self.loadTweets(f, bag_it, tweets)
         else:
-            with open(filename) as f:
+            with open(filenames) as f:
                 if bag_it:
                     bow = None
                 else:

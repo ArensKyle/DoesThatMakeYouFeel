@@ -31,7 +31,7 @@ def sig_vec(tweets, sig_words, task):
                 else:
                     expected_index = 0
                 expected_map[tweet_index, expected_index] = 1
-            elif (task == "B" or task = "D"):
+            elif (task == "B" or task == "D"):
                 if (token.sentiment == "positive"):
                     expected_index = 1
                 else:
