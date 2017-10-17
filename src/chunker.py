@@ -1,4 +1,6 @@
 
+#used to break the top level set of tweets into 'chunks' that are appropriately
+#sized for the neural nets
 class Chunker:
     def __init__(self, data):
         self.data = data
@@ -12,4 +14,3 @@ class Chunker:
             return self.data[low:] + self.data[:high]
         else:
             return self.data[low:high]
-
