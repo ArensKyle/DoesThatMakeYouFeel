@@ -47,7 +47,7 @@ class Model:
 
     def train(self, files):
         tweets, sig_words = self.loadTweets(files, True)
-        self.buildW2VMap()
+        self.buildWordIndexMap()
 
         tweets, conjunctives = conj_classify_tweets(tweets)
 
