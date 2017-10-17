@@ -1,4 +1,4 @@
-
+#class object used for holding one tweet
 class Tweet:
   def __init__(self, tokens=[], twitterId='', literal='', sentiment='', subject=''):
     self.tokens = tokens #A list of all tokens present in the text body of the tweet

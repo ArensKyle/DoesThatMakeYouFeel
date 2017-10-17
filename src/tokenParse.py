@@ -51,13 +51,4 @@ def annotateHashtag(token):
 def annotateSpelling(token):
   '''Take a token, and check if is spelled correctly'''
   token.attrs[SPELL_F] = int(d.check(token.word))
-
-
-def testAnnotate():
-  tokens = [words.Word("#test", 'VP'), words.Word(".",'VP'), words.Word("babe",'VP'), words.Word("!",'VP')]
-  annotateTokens(tokens)
-  print("hi")
-  print(HASHTAG_F)
-  print(tokens[0].attrs)
-
-# testAnnotate()
+  
