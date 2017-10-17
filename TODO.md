@@ -9,7 +9,7 @@ TODO
 - set up for proof of concept run
   - training portion
   - test portion
-- filter out 'not availables'
+
 
 Finished
 
@@ -23,3 +23,4 @@ Finished
 - pos tagging to word index
 - punctuation
 - normal neural net
+- filter out 'not availables'
