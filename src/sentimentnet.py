@@ -69,3 +69,4 @@ def create_graph(categories, vocab_size, feature_size):
             tf.zeros([categories]))
 
     return (tweet_w_input, tweet_f_input, tf.nn.softmax(tf.nn.bias_add(tf.matmul(h_pool_flat, pool_weights), pool_biases)))
+

@@ -4,11 +4,7 @@ import re, nltk, words, tweet
 
 SIGNIFICANT = 3
 
-def massage(data, col):
-    bag_of_words = {}
-    sig_words = {}
-    tweets = []
-    x=0
+def massage(data, tweets=[], bag_of_words={}, sig_words={}):
     tknzr = TweetTokenizer()
     for lines in data:
 
@@ -47,20 +43,10 @@ def massage(data, col):
                 tokens[idx], # word
                 pos) # pos
             )
-
-            # update bag of words
-            key = pos_tags[idx][0] + "_" + (pos)
-            bag_of_words[key] = bag_of_words.get(key, 0) + 1
-
-
-        #turn bag of words into index of significant words for NN
-        #word index 0 = padding
-        #word index 1 = never seen
-        word_index = 2
-        for word in bag_of_words:
-            if(bag_of_words.get(word) > SIGNIFICANT):
-                sig_words[word] = word_index
-                word_index += 1
+            if bag_of_words is not None:
+                # update bag of words
+                key = pos_tags[idx][0] + "_" + (pos)
+                bag_of_words[key] = bag_of_words.get(key, 0) + 1
 
         #calls the token parsing functionality in order to determine features
         #vector for each word
@@ -69,5 +55,3 @@ def massage(data, col):
 
         #add the analyzed tweet into the final array for the neural net
         tweets.append(tweet_obj)
-
-    return tweets, sig_words

@@ -2,44 +2,71 @@ import words_to_vectors as wtv
 import conjunction as cnj
 import massage, sys
 
+import tensorflow as tf
+
 def main():
-    train()
-    test()
+    m = Model()
 
-def train():
-    # Load the data files and massage
-    datafile_A = open('../data/2016downloaded4-subtask A.tsv')
-    print("entering massage")
-    task_A_ret = massage.massage(datafile_A, 2)
-    print("leaving massage")
-    task_A = task_A_ret[0]
-    task_A_word_index = task_A_ret[1]
+    m.train(["trainfile"])
+    m.test(["testfile"])
 
-    conj_returns = conj_classify_tweets(task_A)
-    task_A = conj_returns[0]
-    conj_A = conj_returns[1]
+class Model:
+    def __init__(self):
+        self.w2vmap = {}
+        self.bag_of_words = {}
+        
+        self.sentinet = None
+        self.conjnet = None
+    
+    def loadTweets(self, filenames, bag_it=False, tweets=[]):
+        if type(filenames) is list:
+            for f in filenames:
+                self.loadAndMassage(f, bag_it, tweets)
+        else:
+            with open(filename) as f:
+                if bag_it:
+                    bow = None
+                else:
+                    bow = self.bag_of_words
+                return massage.massage(f, tweets=tweets, 
+                        bag_of_words=bow)
 
-    #for tweet in task_A:
-    #    for token in tweet.tokens:
-    #        print(tweet.id, token.attrs, token.word)
-    # rip out relevant part for tokenizer
+        return tweets, sig_words
 
-    print("entering word to vec")
-    vector_returns_A = wtv.sig_vec(task_A, task_A_word_index)
-    print("leaving word to vec")
-    word_map_A = vector_returns_A[0]
-    feat_map_A = vector_returns_A[1]
+    def buildW2VMap(self):
+        self.w2vmap = {}
 
-    print("entering word to vec")
-    conj_vector_returns_A = wtv.sig_vec(conj_A, task_A_word_index)
-    print("leaving word to vec")
-    conj_word_map_A = vector_returns_A[0]
-    conj_feat_map_A = vector_returns_A[1]
+        #turn bag of words into index of significant words for NN
+        #word index 0 = padding
+        #word index 1 = never seen
+        word_index = 2
+        for word in self.bag_of_words:
+            if(self.bag_of_words[word] > SIGNIFICANT):
+                self.w2vmap[word] = word_index
+                word_index += 1
 
+    def train(self, files):
+        tweets, sig_words = loadAndMassage(files, True)
+        self.buildW2VMap()
 
-def test():
+        tweets, conjunctives = conj_classify_tweets(tweets)
 
+        # first, go through and train the main net
 
+        # DO TRAINING!!!!
+        # results will be stored in sentinet
+
+        # DO MORE TRAINING!!!!
+        # results will be stored in conjnet
+
+    def test(self, files):
+        tweets, sig_words = self.loadAndMassage(files, False)
+        
+        tweets, conjunctives = conj_classify_tweets(tweets)
+
+        # run tweets through batch
+
+        # flatten and run conjunctives through
 
 if __name__ == '__main__':
     sys.exit(main())
