@@ -9,9 +9,9 @@ def main():
     m = Model("A", 3)
 
     print("Beginning training")
-    m.train(["../data/Subtask_A/twitter-2016dev-A.txt"], 50, 12)
+    m.train(["../data/Subtask_A/twitter-2016dev-A.txt.download"], 50, 12)
     print("Beginning testing")
-    m.test(["../data/Subtask_A/twitter-2016devtest-A.txt"], 50, 12)
+    m.test(["../data/Subtask_A/twitter-2016devtest-A.txt.download"], 50, 12)
 
 class Model:
     def __init__(self, task, categories):
