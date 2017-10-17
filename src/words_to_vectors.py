@@ -2,7 +2,7 @@ import numpy as np
 import re, nltk, words, tweet
 
 def sig_vec(tweets, sig_words):
-t    word_map = np.zeros([len(tweets), 70])
+    word_map = np.zeros([len(tweets), 70])
     feat_map = np.zeros([len(tweets), 70, words.feat_len()])
     print(word_map.size)
     print(feat_map.size)
