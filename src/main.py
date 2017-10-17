@@ -8,8 +8,10 @@ import tensorflow as tf
 def main():
     m = Model("A", 3)
 
-    m.train(["trainfile"])
-    m.test(["testfile"])
+    print("Beginning training")
+    m.train(["../data/Subtask_A/twitter-2016dev-A.txt"])
+    print("Beginning testing")
+    m.test(["../data/Subtask_A/twitter-2016devtest-A.txt"])
 
 class Model:
     def __init__(self, task, categories):
