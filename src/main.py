@@ -12,29 +12,29 @@ def main():
 
 class Model:
     def __init__(self):
-        self.w2vmap = {}
+        self.word_index_map = {}
         self.bag_of_words = {}
-        
+
         self.sentinet = None
         self.conjnet = None
-    
+
     def loadTweets(self, filenames, bag_it=False, tweets=[]):
         if type(filenames) is list:
             for f in filenames:
-                self.loadAndMassage(f, bag_it, tweets)
+                self.loadTweets(f, bag_it, tweets)
         else:
             with open(filename) as f:
                 if bag_it:
                     bow = None
                 else:
                     bow = self.bag_of_words
-                return massage.massage(f, tweets=tweets, 
+                return massage.massage(f, tweets=tweets,
                         bag_of_words=bow)
 
         return tweets, sig_words
 
-    def buildW2VMap(self):
-        self.w2vmap = {}
+    def buildWordIndexMap(self):
+        self.word_index_map = {}
 
         #turn bag of words into index of significant words for NN
         #word index 0 = padding
@@ -42,11 +42,11 @@ class Model:
         word_index = 2
         for word in self.bag_of_words:
             if(self.bag_of_words[word] > SIGNIFICANT):
-                self.w2vmap[word] = word_index
+                self.word_index_map[word] = word_index
                 word_index += 1
 
     def train(self, files):
-        tweets, sig_words = loadAndMassage(files, True)
+        tweets, sig_words = self.loadTweets(files, True)
         self.buildW2VMap()
 
         tweets, conjunctives = conj_classify_tweets(tweets)
@@ -60,8 +60,8 @@ class Model:
         # results will be stored in conjnet
 
     def test(self, files):
-        tweets, sig_words = self.loadAndMassage(files, False)
-        
+        tweets, sig_words = self.loadTweets(files, False)
+
         tweets, conjunctives = conj_classify_tweets(tweets)
 
         # run tweets through batch

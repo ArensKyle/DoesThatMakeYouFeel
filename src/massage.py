@@ -4,7 +4,7 @@ import re, nltk, words, tweet
 
 SIGNIFICANT = 3
 
-def massage(data, tweets=[], bag_of_words={}, sig_words={}):
+def massage(data, tweets=[], bag_of_words={}):
     tknzr = TweetTokenizer()
     for lines in data:
 
