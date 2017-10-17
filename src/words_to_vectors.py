@@ -1,11 +1,16 @@
 import numpy as np
 import re, nltk, words, tweet
 
-def sig_vec(tweets, sig_words):
+def sig_vec(tweets, sig_words, task):
     word_map = np.zeros([len(tweets), 70])
     feat_map = np.zeros([len(tweets), 70, words.feat_len()])
-    print(word_map.size)
-    print(feat_map.size)
+    if (task == "A"):
+        categories = 3
+    elif (task == "B" or task == "D"):
+        categories = 2
+    else:
+        categories = 5
+    expected_map = np.zeros([len(tweets), categories])
 
 
     tweet_index = 0
@@ -17,6 +22,35 @@ def sig_vec(tweets, sig_words):
             else:
                 word_map[tweet_index, word_index] = 1
 
+            #for creating expected sentiment vector
+            if (task == "A"):
+                if (token.sentiment == "positive"):
+                    expected_index = 2
+                elif (token.sentiment == "neutral"):
+                    expected_index = 1
+                else:
+                    expected_index = 0
+                expected_map[tweet_index, expected_index] = 1
+            elif (task == "B" or task = "D"):
+                if (token.sentiment == "positive"):
+                    expected_index = 1
+                else:
+                    expected_index = 0
+                expected_map[tweet_index, expected_index] = 1
+            else:
+                if (token.sentiment == 2):
+                    expected_index = 4
+                elif (token.sentiment == 1):
+                    expected_index = 3
+                elif (token.sentiment == 0):
+                    expected_index = 2
+                elif (token.sentiment == -1):
+                    expected_index = 1
+                else:
+                    expected_index = 0
+                expected_map[tweet_index, expected_index] = 1
+
+            #create 3rd dimensional vectors to hold feature values
             feature_index = 0
             for feat in token.attrs:
                 feat_map[tweet_index, word_index, feature_index] = feat
@@ -24,4 +58,4 @@ def sig_vec(tweets, sig_words):
             word_index = word_index + 1
         tweet_index = tweet_index + 1
 
-    return word_map, feat_map
+    return word_map, feat_map, expected_map

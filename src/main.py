@@ -5,18 +5,20 @@ import massage, sys
 import tensorflow as tf
 
 def main():
-    m = Model()
+    m = Model("A")
 
     m.train(["trainfile"])
     m.test(["testfile"])
 
 class Model:
-    def __init__(self):
+    def __init__(self, task):
+        self.task = task
+
         self.word_index_map = {}
         self.bag_of_words = {}
 
         self.sentinet = None
-    
+
     def loadTweets(self, filenames, bag_it=False, tweets=[]):
         if type(filenames) is list:
             for f in filenames:
@@ -48,7 +50,7 @@ class Model:
         tweets = self.loadTweets(files, True)
         self.buildWordIndexMap()
 
-        words, feats = wtv.sig_vec(tweets, self.word_index_map) 
+        words, feats = wtv.sig_vec(tweets, self.word_index_map, task)
 
         # train main net
         with tf.Session() as sess:
@@ -65,14 +67,14 @@ class Model:
 
     def test(self, files, categories):
         tweets = self.loadTweets(files, False)
-            
-        w_vals, f_vals = wtv.sig_vec(tweets, sig_words)
-       
+
+        w_vals, f_vals = wtv.sig_vec(tweets, sig_words, task)
+
         correct_results = 0
 
         with tf.Session() as sess:
             tw_input, tf_input, graph = self.sentinet
-        
+
             y_ = tf.placeholder(tf.float32, [None, categories])
             validation_graph = netutil.correct_prediction(graph, y_)
 
