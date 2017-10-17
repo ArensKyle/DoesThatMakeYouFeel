@@ -1,7 +1,10 @@
 import words_to_vectors as wtv
 import chunker as c
 import massage, sys
+import words as w
+import netutil
 
+import sentimentnet
 
 import tensorflow as tf
 
@@ -60,7 +63,7 @@ class Model:
         with tf.Session() as sess:
             # initialize nets
             sess.run(tf.global_variables_initializer())
-            self.sentinet = sentimentnet.create_graph(self.categories, len(self.word_index_map), words.feat_len())
+            self.sentinet = sentimentnet.create_graph(self.categories, len(self.word_index_map), w.feat_len())
 
             tw_input, tf_input, graph = self.sentinet
 
@@ -69,7 +72,7 @@ class Model:
            
             for i in range(batchrounds):
                 tweetbatch = tchunker.batch(batchsize)
-                words, feats, expected = wtv.sig_vec(tweetbatch, self.word_index_map, task)
+                words, feats, expected = wtv.sig_vec(tweetbatch, self.word_index_map, self.task)
 
                 sess.run(trainfn, feed_dict={tw_input: words, tf_input: feats, expected_input: expected})
 
@@ -86,7 +89,7 @@ class Model:
             validation_graph = netutil.correct_prediction(graph, y_)
             for i in range(batchrounds):
                 tweetbatch = tchunker.batch(batchsize)
-                w_vals, f_vals, expected = wtv.sig_vec(tweetbatch, sig_words, task)
+                w_vals, f_vals, expected = wtv.sig_vec(tweetbatch, sig_words, self.task)
             
                 correct_results += sess.run(validation_graph, feed_dict={tw_input: w_vals, tf_input: f_vals, y_: expected})
         print("Accuracy: {}".format(correct_results / len(tweets)))
