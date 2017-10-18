@@ -10,13 +10,33 @@ import tensorflow as tf
 
 SIGNIFICANT = 3
 
+subtask = "a"
+
+categoryCount = {
+    "a": 3,
+    "b": 2,
+    "c": 5
+}
+
+trainData = {
+    "a": "../data/Subtask_A/twitter-2016dev-A.txt.download",
+    "b": "../data/Subtasks_BD/twitter-2016dev-BD.txt.download",
+    "c": "../data/Subtasks_CE/twitter-2016dev-CE.txt.download"
+}
+
+testData = {
+    "a": "../data/Subtask_A/twitter-2016devtest-A.txt.download",
+    "b": "../data/Subtasks_BD/twitter-2016devtest-BD.txt.download",
+    "c": "../data/Subtasks_CE/twitter-2016devtest-CE.txt.download"
+}
+
 def main():
-    m = Model("C", 5)
+    m = Model(subtask.upper(), categoryCount[subtask])
     with tf.Session() as sess:
         print("Beginning training")
-        m.train(sess, ["../data/Subtasks_BD/twitter-2016dev-BD.txt.download"], 50, 12 * 5)
+        m.train(sess, [trainData[subtask]], 50, 12 * 5)
         print("Beginning testing")
-        m.test(sess, ["../data/Subtasks_BD/twitter-2016devtest-BD.txt.download"], 50, 12)
+        m.test(sess, [testData[subtask]], 50, 12)
 
 class Model:
     def __init__(self, task, categories):
