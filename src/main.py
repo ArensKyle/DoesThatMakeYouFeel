@@ -4,14 +4,13 @@ import massage, sys
 import words as w
 import netutil
 import math
+import argparse
 
 import sentimentnet
 
 import tensorflow as tf
 
 SIGNIFICANT = 3
-
-subtask = "c"
 
 categoryCount = {
     "a": 3,
@@ -32,12 +31,15 @@ testData = {
 }
 
 def main():
-    m = Model(subtask.upper(), categoryCount[subtask])
+    p = argparse.ArgumentParser(description='Does some math')
+    p.add_argument('subtask', choices=['a', 'b', 'c'])
+    a = p.parse_args()
+    m = Model(a.subtask.upper(), categoryCount[a.subtask])
     with tf.Session() as sess:
         #print("Beginning training")
-        m.train(sess, [trainData[subtask]], 5, 1)
+        m.train(sess, [trainData[a.subtask]], 5, 1)
         #print("Beginning testing")
-        m.test(sess, [testData[subtask]])
+        m.test(sess, [testData[a.subtask]])
 
 class Model:
     def __init__(self, task, categories):
