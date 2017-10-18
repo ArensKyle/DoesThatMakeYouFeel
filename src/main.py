@@ -31,16 +31,16 @@ testData = {
 }
 
 categoryMapping = {
-    "a": {
+    "A": {
         2: "positive",
         1: "neutral",
         0: "negative",
     },
-    "b": {
+    "B": {
         1: "positive",
         0: "negative",
     },
-    "c": {
+    "C": {
         4: 2,
         3: 1,
         2: 0,
@@ -176,8 +176,12 @@ class Model:
     
         prediction_v, accuracy_v = sess.run([prediction, accuracy], feed_dict={tw_input: w_vals, tf_input: f_vals, y_: expected})
         # print(accuracy_v)
-        for idx in range(len(prediction_v)):
-            print(tweets[idx].id, categoryMapping[subtask][prediction_v[idx]], sep='\t') if subtask == "a" else print(tweets[idx].id, tweets[idx].subject, categoryMapping[subtask][prediction_v[idx]], sep='\t')
+        with open('results.txt', 'w') as rf:
+            for idx in range(len(prediction_v)):
+                if self.task == "A":
+                    rf.write(tweets[idx].id + "\t" + categoryMapping[self.task][prediction_v[idx]] + "\n")
+                else:
+                    rf.write(tweets[idx].id + "\t" + tweets[idx].subject + "\t" + categoryMapping[self.task][prediction_v[idx]] + "\n")
 
 if __name__ == '__main__':
     for x in range(1):
