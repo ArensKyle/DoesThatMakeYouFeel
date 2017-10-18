@@ -155,6 +155,15 @@ class Model:
                     rf.write(tweets[idx].id + "\t" + categoryMapping[self.task][prediction_v[idx]] + "\n")
                 else:
                     rf.write(tweets[idx].id + "\t" + tweets[idx].subject + "\t" + categoryMapping[self.task][prediction_v[idx]] + "\n")
+        
+        with open('master.txt', 'w') as rf:
+            for idx in range(len(prediction_v)):
+                if self.task == "A":
+                    rf.write(tweets[idx].id + "\t" + tweet.sentiment + "\n")
+                else:
+                    rf.write(tweets[idx].id + "\t" + tweets[idx].subject + "\t" + tweet.sentiment + "\n")
+        
+        
 
 if __name__ == '__main__':
     for x in range(1):
