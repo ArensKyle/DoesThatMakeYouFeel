@@ -56,7 +56,7 @@ def main():
     m = Model(a.subtask.upper(), categoryCount[a.subtask])
     with tf.Session() as sess:
         #print("Beginning training")
-        m.train(sess, [trainData[a.subtask]], 10, 1)
+        m.train(sess, trainData[a.subtask], 10, 1)
         #print("Beginning testing")
         print("calling test with ", testData[a.subtask])
         m.test(sess, testData[a.subtask])
@@ -71,22 +71,9 @@ class Model:
 
         self.sentinet = None
 
-    def loadTweets(self, filenames, bag_it=False, tweets=[]):
-        print(filenames)
-        if type(filenames) is list:
-            for f in filenames:
-                self.loadTweets(f, bag_it, tweets)
-            return tweets
-        else:
-            with open(filenames) as f:
-                if bag_it:
-                    return massage.massage(f, tweets=tweets,
-                            bag_of_words=self.bag_of_words)
-                else:
-                    return massage.massage(f, tweets=tweets,
-                            bag_of_words=None)
-        print(tweets)
-        return tweets
+    def loadTweets(self, filename, bag_it=False):
+        with open(filename) as f:
+            return massage.massage(f, bag_of_words=(self.bag_of_words if bag_it else None))
 
     def buildWordIndexMap(self):
         self.word_index_map = {}
