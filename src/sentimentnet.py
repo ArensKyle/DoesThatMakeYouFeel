@@ -2,7 +2,7 @@ import tensorflow as tf
 
 TWEET_WL_MAX = 70
 EMBEDDING_SIZE = 128
-FILTER_SIZES = [3, 4, 5]
+FILTER_SIZES = [4] #, 4, 5]
 NUM_FILTERS = 50 
 
 def create_graph(categories, vocab_size, feature_size):

@@ -3,6 +3,7 @@ import chunker as c
 import massage, sys
 import words as w
 import netutil
+import math
 
 import sentimentnet
 
@@ -34,9 +35,9 @@ def main():
     m = Model(subtask.upper(), categoryCount[subtask])
     with tf.Session() as sess:
         print("Beginning training")
-        m.train(sess, [trainData[subtask]], 50, 12 * 5)
+        m.train(sess, [trainData[subtask]], 50, 1)
         print("Beginning testing")
-        m.test(sess, [testData[subtask]], 50, 12)
+        m.test(sess, [testData[subtask]])
 
 class Model:
     def __init__(self, task, categories):
@@ -75,12 +76,14 @@ class Model:
                 self.word_index_map[word] = word_index
                 word_index += 1
 
-    def train(self, sess, files, batchrounds, batchsize):
+    def train(self, sess, files, batchsize, batchrounds):
         tweets = self.loadTweets(files, True)
         self.buildWordIndexMap()
 
         print("Word Vocab Size: {}".format(len(self.word_index_map) + 2))
 
+
+        batchrounds = math.ceil(len(tweets) * batchrounds / batchsize)
         tchunker = c.Chunker(tweets)
         
         self.sentinet = sentimentnet.create_graph(self.categories, len(self.word_index_map) + 2, w.feat_len())
@@ -88,7 +91,7 @@ class Model:
         tw_input, tf_input, graph, variables = self.sentinet
 
         expected_input, optimize_graph = netutil.optimize(graph, self.categories)
-        trainer = tf.train.AdamOptimizer(1e-4)
+        trainer = tf.train.AdamOptimizer(5e-3)
         
         trainfn = trainer.minimize(optimize_graph)
         # initialize nets
@@ -101,7 +104,7 @@ class Model:
 
             sess.run(trainfn, feed_dict={tw_input: words, tf_input: feats, expected_input: expected})
 
-    def test(self, sess, files, batchrounds, batchsize):
+    def test(self, sess, files):
         tweets = self.loadTweets(files, False)
 
         correct_results = 0
