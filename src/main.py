@@ -41,40 +41,13 @@ categoryMapping = {
         0: "negative",
     },
     "C": {
-        4: 2,
-        3: 1,
-        2: 0,
-        1: -1,
-        0: -2,
+        4: "2",
+        3: "1",
+        2: "0",
+        1: "-1",
+        0: "-2",
     }
 }
-# for idx in len(prediction_v):
-
-# if (task == "A"):
-#     if (record.sentiment == "positive"):
-#         expected_index = 2
-#     elif (record.sentiment == "neutral"):
-#         expected_index = 1
-#     else:
-#         expected_index = 0
-#     expected_map[tweet_index, expected_index] = 1
-# elif (task == "B" or task == "D"):
-#     if (record.sentiment == "positive"):
-#         expected_index = 1
-#     else:
-#         expected_index = 0
-#     expected_map[tweet_index, expected_index] = 1
-# else:
-#     if (record.sentiment == 2):
-#         expected_index = 4
-#     elif (record.sentiment == 1):
-#         expected_index = 3
-#     elif (record.sentiment == 0):
-#         expected_index = 2
-#     elif (record.sentiment == -1):
-#         expected_index = 1
-#     else:
-#         expected_index = 0
 
 def main():
     p = argparse.ArgumentParser(description='Does some math')
@@ -175,7 +148,7 @@ class Model:
         w_vals, f_vals, expected = wtv.sig_vec(tweets, self.word_index_map, self.task)
     
         prediction_v, accuracy_v = sess.run([prediction, accuracy], feed_dict={tw_input: w_vals, tf_input: f_vals, y_: expected})
-        # print(accuracy_v)
+        print(accuracy_v)
         with open('results.txt', 'w') as rf:
             for idx in range(len(prediction_v)):
                 if self.task == "A":
