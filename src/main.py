@@ -120,7 +120,7 @@ class Model:
         accuracy = tf.reduce_mean(tf.cast(validation_graph, tf.float32))
         w_vals, f_vals, expected = wtv.sig_vec(tweets, self.word_index_map, self.task)
     
-        prediction_v, accuracy_v = sess.run([prediction, accuracy], feed_dict={tw_input: w_vals, tf_input: f_vals})
+        prediction_v, accuracy_v = sess.run([prediction, accuracy], feed_dict={tw_input: w_vals, tf_input: f_vals, y_: expected})
         print(accuracy_v)
 
 if __name__ == '__main__':
