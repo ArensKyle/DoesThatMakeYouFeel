@@ -7,9 +7,9 @@ def sig_vec(tweets, sig_words, task):
     word_map = np.zeros([len(tweets), 70])
     feat_map = np.zeros([len(tweets), 70, words.feat_len()])
     #selecting the number of output categories based on the task
-    if (task == "A"):
+    if task == "A":
         categories = 3
-    elif (task == "B" or task == "D"):
+    elif task == "B" or task == "D":
         categories = 2
     else:
         categories = 5
@@ -17,26 +17,21 @@ def sig_vec(tweets, sig_words, task):
 
 
     tweet_index = 0
-    print("begin massaging")
-    positive_count = 0
-    negative_count = 0
     for record in tweets:
         word_index = 0
         #for creating expected sentiment vector used to validate the
         #performance of our model
-        if (task == "A"):
+        if task == "A":
             if (record.sentiment == "positive"):
                 expected_index = 2
             elif (record.sentiment == "neutral"):
                 expected_index = 1
             else:
                 expected_index = 0
-        elif (task == "B" or task == "D"):
-            if (record.sentiment == "positive"):
-                positive_count += 1
+        elif task == "B":
+            if record.sentiment == "positive":
                 expected_index = 1
             else:
-                negative_count += 1
                 expected_index = 0
         else:
             if (record.sentiment == "2"):
@@ -67,5 +62,4 @@ def sig_vec(tweets, sig_words, task):
             word_index = word_index + 1
         tweet_index = tweet_index + 1
 
-    # print("Pos_count", positive_count, "Neg_count", negative_count)
     return word_map, feat_map, expected_map
