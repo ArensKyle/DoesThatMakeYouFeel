@@ -76,6 +76,7 @@ class Model:
         if type(filenames) is list:
             for f in filenames:
                 self.loadTweets(f, bag_it, tweets)
+            return tweets
         else:
             with open(filenames) as f:
                 if bag_it:
