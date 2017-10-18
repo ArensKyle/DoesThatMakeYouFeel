@@ -20,18 +20,20 @@ def create_graph(categories, vocab_size, feature_size):
     embedded_expanded = tf.expand_dims(embedded_chars, -1)
 
     # Feature adjustment
-#    W_feat = tf.Variable(tf.truncated_normal([1, TWEET_WL_MAX, TWEET_WL_MAX], stddev=1.0))
-    #variables.append(W_feat)
-    #b_feat = tf.Variable(tf.zeros(NUM_FILTERS))
-    #variables.append(b_feat)
-  
-    #conv_feature = tf.nn.conv1d(
-    #        tweet_f_input,
-    #        W_feat,
-    #        stride=1,
-    #        padding="VALID")
+    W_feat = tf.Variable(tf.truncated_normal([TWEET_WL_MAX, feature_size, 1, NUM_FILTERS], stddev=1.0))
+    variables.append(W_feat)
+    b_feat = tf.Variable(tf.zeros(NUM_FILTERS))
+    variables.append(b_feat)
 
-    #feat_adj = tf.nn.bias_add(conv_feature, b_feat)
+    tweet_f_expanded = tf.expand_dims(tweet_f_input, -1)
+  
+    conv_feature = tf.nn.conv2d(
+            tweet_f_expanded,
+            W_feat,
+            strides=[1, 1, 1, 1],
+            padding="SAME")
+
+    feat_adj = tf.nn.bias_add(conv_feature, b_feat)
 
     # Convolution
     pooled_outputs = []
@@ -51,6 +53,8 @@ def create_graph(categories, vocab_size, feature_size):
 
 
         conv_bias = tf.nn.bias_add(conv_embedding, b_embedding)
+        print(conv_bias.shape)
+        print(feat_adj.shape)
 
     #    conv_adjusted = conv_bias * feat_adj
         conv_relu = tf.nn.relu(conv_bias)
