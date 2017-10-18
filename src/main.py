@@ -159,9 +159,9 @@ class Model:
         with open('master.txt', 'w') as rf:
             for idx in range(len(prediction_v)):
                 if self.task == "A":
-                    rf.write(tweets[idx].id + "\t" + tweet.sentiment + "\n")
+                    rf.write(tweets[idx].id + "\t" + tweets[idx].sentiment + "\n")
                 else:
-                    rf.write(tweets[idx].id + "\t" + tweets[idx].subject + "\t" + tweet.sentiment + "\n")
+                    rf.write(tweets[idx].id + "\t" + tweets[idx].subject + "\t" + tweets[idx].sentiment + "\n")
         
         
 
