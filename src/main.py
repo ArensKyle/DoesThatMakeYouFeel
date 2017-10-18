@@ -58,7 +58,8 @@ def main():
         #print("Beginning training")
         m.train(sess, [trainData[a.subtask]], 10, 1)
         #print("Beginning testing")
-        m.test(sess, [testData[a.subtask]])
+        print("calling test with ", testData[a.subtask])
+        m.test(sess, testData[a.subtask])
 
 class Model:
     def __init__(self, task, categories):
@@ -71,6 +72,7 @@ class Model:
         self.sentinet = None
 
     def loadTweets(self, filenames, bag_it=False, tweets=[]):
+        print(filenames)
         if type(filenames) is list:
             for f in filenames:
                 self.loadTweets(f, bag_it, tweets)
@@ -82,7 +84,7 @@ class Model:
                 else:
                     return massage.massage(f, tweets=tweets,
                             bag_of_words=None)
-
+        print(tweets)
         return tweets
 
     def buildWordIndexMap(self):
@@ -135,7 +137,7 @@ class Model:
 
     def test(self, sess, files):
         tweets = self.loadTweets(files, False)
-
+        print(tweets[0].id)
         correct_results = 0
 
         tw_input, tf_input, graph, variables = self.sentinet

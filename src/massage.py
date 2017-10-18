@@ -55,3 +55,5 @@ def massage(data, tweets=[], bag_of_words={}):
 
         #add the analyzed tweet into the final array for the neural net
         tweets.append(tweet_obj)
+
+    return tweets
