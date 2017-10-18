@@ -28,25 +28,23 @@ def sig_vec(tweets, sig_words, task):
                 expected_index = 1
             else:
                 expected_index = 0
-            expected_map[tweet_index, expected_index] = 1
         elif (task == "B" or task == "D"):
             if (record.sentiment == "positive"):
                 expected_index = 1
             else:
                 expected_index = 0
-            expected_map[tweet_index, expected_index] = 1
         else:
-            if (record.sentiment == 2):
+            if (record.sentiment == "2"):
                 expected_index = 4
-            elif (record.sentiment == 1):
+            elif (record.sentiment == "1"):
                 expected_index = 3
-            elif (record.sentiment == 0):
+            elif (record.sentiment == "0"):
                 expected_index = 2
-            elif (record.sentiment == -1):
+            elif (record.sentiment == "-1"):
                 expected_index = 1
             else:
                 expected_index = 0
-            expected_map[tweet_index, expected_index] = 1
+        expected_map[tweet_index, expected_index] = 1
         #read each token and substitute in it's integer value
         for token in record.tokens:
             if (sig_words.get(token.word + "_" + token.pos)):

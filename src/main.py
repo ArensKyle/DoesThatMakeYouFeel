@@ -4,14 +4,13 @@ import massage, sys
 import words as w
 import netutil
 import math
+import argparse
 
 import sentimentnet
 
 import tensorflow as tf
 
 SIGNIFICANT = 3
-
-subtask = "a"
 
 categoryCount = {
     "a": 3,
@@ -78,12 +77,15 @@ categoryMapping = {
 #         expected_index = 0
 
 def main():
-    m = Model(subtask.upper(), categoryCount[subtask])
+    p = argparse.ArgumentParser(description='Does some math')
+    p.add_argument('subtask', choices=['a', 'b', 'c'])
+    a = p.parse_args()
+    m = Model(a.subtask.upper(), categoryCount[a.subtask])
     with tf.Session() as sess:
         #print("Beginning training")
-        m.train(sess, [trainData[subtask]], 10, 10)
+        m.train(sess, [trainData[a.subtask]], 10, 1)
         #print("Beginning testing")
-        m.test(sess, [testData[subtask]])
+        m.test(sess, [testData[a.subtask]])
 
 class Model:
     def __init__(self, task, categories):
@@ -135,8 +137,13 @@ class Model:
         self.sentinet = sentimentnet.create_graph(self.categories, len(self.word_index_map) + 2, w.feat_len())
         
         tw_input, tf_input, graph, variables = self.sentinet
+        
 
         expected_input, optimize_graph = netutil.optimize(graph, self.categories)
+        validation_graph = tf.equal(tf.argmax(graph, 1), tf.argmax(expected_input, 1))
+
+        accuracy = tf.reduce_mean(tf.cast(validation_graph, tf.float32))
+
         trainer = tf.train.AdamOptimizer(1e-2)
         
         trainfn = trainer.minimize(optimize_graph)
@@ -148,9 +155,10 @@ class Model:
             tweetbatch = tchunker.batch(batchsize)
             words, feats, expected = wtv.sig_vec(tweetbatch, self.word_index_map, self.task)
 
-            _, loss_val = sess.run([trainfn, optimize_graph], feed_dict={tw_input: words, tf_input: feats, expected_input: expected})
-            # if i % 10 == 0:
-                # print("LOSS: {} @ {}".format(loss_val, i))
+            sess.run(trainfn, feed_dict={tw_input: words, tf_input: feats, expected_input: expected})
+            if i % 10 == 0:
+                accuracy_f = sess.run(accuracy, feed_dict={tw_input: words, tf_input: feats, expected_input: expected})
+                print("accuracy: {:.1f} @ {}".format(accuracy_f, i))
 
     def test(self, sess, files):
         tweets = self.loadTweets(files, False)
