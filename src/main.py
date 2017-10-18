@@ -127,7 +127,7 @@ class Model:
         tweets = self.loadTweets(files, False)
         print(tweets[0].id)
         correct_results = 0
-
+        print("test categories", self.categories)
         tw_input, tf_input, graph, variables = self.sentinet
 
         y_ = tf.placeholder(tf.int32, [None, self.categories])
