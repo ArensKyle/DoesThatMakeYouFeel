@@ -19,25 +19,26 @@ def create_graph(categories, vocab_size, feature_size):
     embedded_chars = tf.nn.embedding_lookup(W, tweet_w_input)
     embedded_expanded = tf.expand_dims(embedded_chars, -1)
 
-    # Feature adjustment
-    W_feat = tf.Variable(tf.truncated_normal([TWEET_WL_MAX, feature_size, 1, NUM_FILTERS], stddev=1.0))
-    variables.append(W_feat)
-    b_feat = tf.Variable(tf.zeros(NUM_FILTERS))
-    variables.append(b_feat)
-
-    tweet_f_expanded = tf.expand_dims(tweet_f_input, -1)
-  
-    conv_feature = tf.nn.conv2d(
-            tweet_f_expanded,
-            W_feat,
-            strides=[1, 1, 1, 1],
-            padding="SAME")
-
-    feat_adj = tf.nn.bias_add(conv_feature, b_feat)
 
     # Convolution
     pooled_outputs = []
     for i, filter_size in enumerate(FILTER_SIZES):
+        
+        # Feature adjustment
+        W_feat = tf.Variable(tf.truncated_normal([filter_size, feature_size, 1, NUM_FILTERS], stddev=1.0))
+        variables.append(W_feat)
+        b_feat = tf.Variable(tf.zeros(NUM_FILTERS))
+        variables.append(b_feat)
+
+        tweet_f_expanded = tf.expand_dims(tweet_f_input, -1)
+      
+        conv_feature = tf.nn.conv2d(
+                tweet_f_expanded,
+                W_feat,
+                strides=[1, 1, 1, 1],
+                padding="VALID")
+
+        feat_adj = tf.nn.bias_add(conv_feature, b_feat)
         
         emb_filter_shape = [filter_size, EMBEDDING_SIZE, 1, NUM_FILTERS]
         W_embedding = tf.Variable(tf.truncated_normal(emb_filter_shape, stddev=0.1))
@@ -51,13 +52,10 @@ def create_graph(categories, vocab_size, feature_size):
                 strides=[1, 1, 1, 1],
                 padding="VALID")
 
-
         conv_bias = tf.nn.bias_add(conv_embedding, b_embedding)
-        print(conv_bias.shape)
-        print(feat_adj.shape)
 
-    #    conv_adjusted = conv_bias * feat_adj
-        conv_relu = tf.nn.relu(conv_bias)
+        conv_adjusted = conv_bias * feat_adj
+        conv_relu = tf.nn.relu(conv_adjusted)
 
         # local pooling of convolution
         pooled = tf.nn.max_pool(
