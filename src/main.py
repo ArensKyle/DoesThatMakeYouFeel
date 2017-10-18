@@ -35,7 +35,7 @@ def main():
     m = Model(subtask.upper(), categoryCount[subtask])
     with tf.Session() as sess:
         #print("Beginning training")
-        m.train(sess, [trainData[subtask]], 50, 10)
+        m.train(sess, [trainData[subtask]], 10, 10)
         #print("Beginning testing")
         m.test(sess, [testData[subtask]])
 
