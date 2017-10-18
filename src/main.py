@@ -35,7 +35,7 @@ def main():
     m = Model(subtask.upper(), categoryCount[subtask])
     with tf.Session() as sess:
         #print("Beginning training")
-        m.train(sess, [trainData[subtask]], 50, 1)
+        m.train(sess, [trainData[subtask]], 50, 10)
         #print("Beginning testing")
         m.test(sess, [testData[subtask]])
 
@@ -80,7 +80,7 @@ class Model:
         tweets = self.loadTweets(files, True)
         self.buildWordIndexMap()
 
-        #print("Word Vocab Size: {}".format(len(self.word_index_map) + 2))
+        print("Word Vocab Size: {}".format(len(self.word_index_map) + 2))
 
 
         batchrounds = math.ceil(len(tweets) * batchrounds / batchsize)
@@ -91,7 +91,7 @@ class Model:
         tw_input, tf_input, graph, variables = self.sentinet
 
         expected_input, optimize_graph = netutil.optimize(graph, self.categories)
-        trainer = tf.train.AdamOptimizer(5e-3)
+        trainer = tf.train.AdamOptimizer(1e-2)
         
         trainfn = trainer.minimize(optimize_graph)
         # initialize nets
@@ -102,7 +102,9 @@ class Model:
             tweetbatch = tchunker.batch(batchsize)
             words, feats, expected = wtv.sig_vec(tweetbatch, self.word_index_map, self.task)
 
-            sess.run(trainfn, feed_dict={tw_input: words, tf_input: feats, expected_input: expected})
+            _, loss_val = sess.run([trainfn, optimize_graph], feed_dict={tw_input: words, tf_input: feats, expected_input: expected})
+            if i % 10 == 0:
+                print("LOSS: {} @ {}".format(loss_val, i))
 
     def test(self, sess, files):
         tweets = self.loadTweets(files, False)
@@ -118,8 +120,8 @@ class Model:
         accuracy = tf.reduce_mean(tf.cast(validation_graph, tf.float32))
         w_vals, f_vals, expected = wtv.sig_vec(tweets, self.word_index_map, self.task)
     
-        accuracy = sess.run(prediction, feed_dict={tw_input: w_vals, tf_input: f_vals})
-        print(accuracy)
+        prediction_v, accuracy_v = sess.run([prediction, accuracy], feed_dict={tw_input: w_vals, tf_input: f_vals})
+        print(accuracy_v)
 
 if __name__ == '__main__':
     for x in range(1):
