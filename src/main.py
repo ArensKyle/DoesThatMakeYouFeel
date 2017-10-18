@@ -34,9 +34,9 @@ testData = {
 def main():
     m = Model(subtask.upper(), categoryCount[subtask])
     with tf.Session() as sess:
-        print("Beginning training")
+        #print("Beginning training")
         m.train(sess, [trainData[subtask]], 50, 1)
-        print("Beginning testing")
+        #print("Beginning testing")
         m.test(sess, [testData[subtask]])
 
 class Model:
@@ -80,7 +80,7 @@ class Model:
         tweets = self.loadTweets(files, True)
         self.buildWordIndexMap()
 
-        print("Word Vocab Size: {}".format(len(self.word_index_map) + 2))
+        #print("Word Vocab Size: {}".format(len(self.word_index_map) + 2))
 
 
         batchrounds = math.ceil(len(tweets) * batchrounds / batchsize)
@@ -113,11 +113,14 @@ class Model:
 
         y_ = tf.placeholder(tf.int32, [None, self.categories])
         validation_graph = tf.equal(tf.argmax(graph, 1), tf.argmax(y_, 1))
+        prediction = tf.argmax(graph, 1)
+
         accuracy = tf.reduce_mean(tf.cast(validation_graph, tf.float32))
         w_vals, f_vals, expected = wtv.sig_vec(tweets, self.word_index_map, self.task)
     
-        accuracy = sess.run(accuracy, feed_dict={tw_input: w_vals, tf_input: f_vals, y_: expected})
+        accuracy = sess.run(prediction, feed_dict={tw_input: w_vals, tf_input: f_vals})
         print(accuracy)
 
 if __name__ == '__main__':
-    sys.exit(main())
+    for x in range(1):
+        main()
