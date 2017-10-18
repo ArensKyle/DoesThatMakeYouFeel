@@ -37,7 +37,7 @@ def main():
     m = Model(a.subtask.upper(), categoryCount[a.subtask])
     with tf.Session() as sess:
         #print("Beginning training")
-        m.train(sess, [trainData[a.subtask]], 5, 1)
+        m.train(sess, [trainData[a.subtask]], 10, 1)
         #print("Beginning testing")
         m.test(sess, [testData[a.subtask]])
 
@@ -112,7 +112,7 @@ class Model:
             sess.run(trainfn, feed_dict={tw_input: words, tf_input: feats, expected_input: expected})
             if i % 10 == 0:
                 accuracy_f = sess.run(accuracy, feed_dict={tw_input: words, tf_input: feats, expected_input: expected})
-                print("accuracy: {:.3f} @ {}".format(accuracy_f, i))
+                print("accuracy: {:.1f} @ {}".format(accuracy_f, i))
 
     def test(self, sess, files):
         tweets = self.loadTweets(files, False)
