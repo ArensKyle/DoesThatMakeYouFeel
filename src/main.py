@@ -11,6 +11,7 @@ import sentimentnet
 import tensorflow as tf
 
 SIGNIFICANT = 3
+TRAIN_RATE = 1e-1
 
 categoryCount = {
     "a": 3,
@@ -107,7 +108,7 @@ class Model:
 
         accuracy = tf.reduce_mean(tf.cast(validation_graph, tf.float32))
 
-        trainer = tf.train.AdamOptimizer(1e-2)
+        trainer = tf.train.AdamOptimizer(TRAIN_RATE)
         
         trainfn = trainer.minimize(optimize_graph)
         # initialize nets
