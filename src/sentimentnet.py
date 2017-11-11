@@ -58,50 +58,9 @@ def create_graph(categories, vocab_size, feature_size):
         padding="VALID")
     conjoin_bias = tf.nn.bias_add(conjoin, b_join)
 
-    #pooled_outputs = []
-    #for i, filter_size in enumerate(FILTER_SIZES):
-        
-    #    emb_filter_shape = [filter_size, JOIN_LAYER_SIZE, 1, NUM_FILTERS]
-    #    W_embedding = tf.Variable(tf.truncated_normal(emb_filter_shape, stddev=0.1))
-    #    variables.append(W_embedding)
-    #    b_embedding = tf.Variable(tf.constant(0.1, shape=[NUM_FILTERS]))
-    #    variables.append(b_embedding)
-#
-#        conv_embedding = tf.nn.conv2d(
-#                embedded_adjusted,
-#                W_embedding,
-#                strides=[1, 1, 1, 1],
-#                padding="VALID")
-#
-#        conv_bias = tf.nn.bias_add(conv_embedding, b_embedding)
-#        conv_relu = tf.nn.relu(conv_bias)
-#
-#        # local pooling of convolution
-#        pooled = tf.nn.max_pool(
-#            conv_relu,
-#            ksize=[1, TWEET_WL_MAX - filter_size + 1, 1, 1],
-#            strides=[1, 1, 1, 1],
-#            padding="VALID")
-
-#        pooled_outputs.append(pooled)
-
-#    num_filters_total = NUM_FILTERS * len(FILTER_SIZES)
-#    h_pool = tf.concat(pooled_outputs, 3)
-#    h_pool_flat = tf.reshape(h_pool, [-1, num_filters_total])
-
-#    pool_weights = tf.Variable(
-#            tf.truncated_normal([num_filters_total, categories]))
-#    variables.append(pool_weights)
-
-#    pool_biases = tf.Variable(
-#            tf.zeros([categories]))
-#    variables.append(pool_biases)
-
-    print(conjoin_bias.shape)
-
     end_width = (TWEET_WL_MAX - 5 + 1)* JOIN_LAYER_SIZE 
 
-    reduxd = tf.reshape(conjoin_bias, [-1, end_width])
+    reduxd = tf.nn.relu(tf.reshape(conjoin_bias, [-1, end_width]))
 
     W_final = tf.Variable(tf.truncated_normal([end_width, categories], stddev=1))
     variables.append(W_final)
