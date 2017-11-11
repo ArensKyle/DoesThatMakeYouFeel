@@ -1,3 +1,11 @@
+# Brown PoS Corpus dict
+# n - noun
+# v - verb
+# a - adjective
+# s - adjective satellite
+# r - adverb
+
+
 import enchant, nltk, words
 
 from nltk.corpus import sentiwordnet as swn
@@ -15,6 +23,35 @@ POSITIVE_F = words.new_feat()
 NEGATIVE_F = words.new_feat()
 OBJECTIVE_F = words.new_feat()
 
+BROWN_TO_SYNSET = {
+  "NN": 'n',
+  "NN$": 'n',
+  "NNS": 'n',
+  "NNS$": 'n',
+  "VB": 'v',
+  "VBD": 'v',
+  "VBG": 'v',
+  "VBN": 'v',
+  "VBP": 'v',
+  "VBZ": 'v',
+  "JJ": 'a',
+  "JJR": 'a',
+  "JJS": 'a',
+  "RB": 'r',
+  "RBR": 'r',
+  "RBS": 'r',
+}
+
+'''else if (tail.contains("VB") || tail.contains("VBD")
+            || tail.contains("VBG") || tail.contains("VBN")
+            || tail.contains("VBP") || tail.contains("VBZ")) 
+        return _dict.get(word + "#v"); 
+    else if (tail.contains("JJ") || tail.contains("JJR")
+            || tail.contains("JJS"))
+        return _dict.get(word + "#a");
+    else if (tail.contains("RB") || tail.contains("RBR")
+            || tail.contains("RBS"))
+        return _dict.get(word + "#r");'''
 
 spell_dict = enchant.Dict("en_US")
 
@@ -107,7 +144,7 @@ def annotateHashtag(token):
 def annotateSpelling(token):
   '''Take a token, and check if is spelled correctly'''
   if ("@" not in token.word):
-    spelledCorrectly = spellDict.check(token.word)
+    spelledCorrectly = spell_dict.check(token.word)
     token.attrs[SPELL_F] = int(spelledCorrectly)
 
   else:
@@ -117,12 +154,12 @@ def annotate_and_correct_spelling(token):
   '''Takes a token, performs spell check then naively corrects spelling if mispelled'''
   if (((token.word[0] != "#" and token.word[0] != "@") and len(token.word) > 1) and token.word != 'httpstco'):
     # ignore #hashtags @mentions, 1 letter words, and our httpstco string.
-    spelledCorrectly = spellDict.check(token.word)
+    spelledCorrectly = spell_dict.check(token.word)
     token.attrs[SPELL_F] = int(spelledCorrectly)
     if (not spelledCorrectly):
       # pyenchant offers a naive spellsuggestion where index zero is "most likely".
-      # print('token.word:', token.word, ' suggested:', spellDict.suggest(token.word))
-      suggestions = spellDict.suggest(token.word)
+      # print('token.word:', token.word, ' suggested:', spell_dict.suggest(token.word))
+      suggestions = spell_dict.suggest(token.word)
       if (len(suggestions) > 0):
         token.word = suggestions[0]
 
@@ -131,7 +168,19 @@ def annotate_and_correct_spelling(token):
   
 def annotate_sentiment(token):
   '''Take a token and assign it a naive sentiment value'''
-  breakdown = swn.senti_synsets(token.word, token.pos)
-  token.attrs[POSITIVE_F] = breakdown.pos_score()
-  token.attrs[NEGATIVE_F] = breakdown.neg_score()
-  token.attrs[OBJECTIVE_F] = breakdown.obj_score()
+  # print('token.word: ', token.word, ' token.pos: ', token.pos)
+  if token.pos in BROWN_TO_SYNSET.keys():
+    breakdown = list(swn.senti_synsets(token.word, BROWN_TO_SYNSET[token.pos]))
+    if (len(breakdown) > 0):
+      token.attrs[POSITIVE_F] = breakdown[0].pos_score()
+      token.attrs[NEGATIVE_F] = breakdown[0].neg_score()
+      token.attrs[OBJECTIVE_F] = breakdown[0].obj_score()
+    else:
+      token.attrs[POSITIVE_F] = 0
+      token.attrs[NEGATIVE_F] = 0
+      token.attrs[OBJECTIVE_F] = 0
+  else:
+      token.attrs[POSITIVE_F] = 0
+      token.attrs[NEGATIVE_F] = 0
+      token.attrs[OBJECTIVE_F] = 0
+  
