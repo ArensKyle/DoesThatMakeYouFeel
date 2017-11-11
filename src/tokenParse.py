@@ -2,6 +2,8 @@ import words
 
 import enchant
 
+from nltk.corpus import sentiwordnet as swn
+
 SPELL_F = words.new_feat()
 HASHTAG_F = words.new_feat()
 
@@ -11,7 +13,12 @@ EXCLAMATION_F = words.new_feat()
 PERIODPERIOD_F = words.new_feat()
 ELLIPSIS_F = words.new_feat()
 
-spellDict = enchant.Dict("en_US")
+POSITIVE_F = words.new_feat()
+NEGATIVE_F = words.new_feat()
+OBJECTIVE_F = words.new_feat()
+
+
+spell_dict = enchant.Dict("en_US")
 
 PUNCTUATION_SEPERATORS = ['.','..','...','!','?']
 PUNCTUATION_MAPPING = {
@@ -51,7 +58,12 @@ def annotateHashtag(token):
 def annotateSpelling(token):
   '''Take a token, and check if is spelled correctly'''
   if ("@" not in token.word):
-    token.attrs[SPELL_F] = int(spellDict.check(token.word))
+    token.attrs[SPELL_F] = int(spell_dict.check(token.word))
   else:
     token.attrs[SPELL_F] = 1
   
+def annotateSentiment(token):
+  '''Take a token and assign it a naive sentiment value'''
+  token.attrs[POSITIVE_F] = 
+  token.attrs[NEGATIVE_F] = 
+  token.attrs[OBJECTIVE_F] = 
