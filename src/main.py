@@ -12,6 +12,8 @@ import tensorflow as tf
 
 SIGNIFICANT = 3
 TRAIN_RATE = 1e-1
+KEEP_PROB = 1
+ROUNDS = 1
 
 categoryCount = {
     "a": 3,
@@ -57,7 +59,7 @@ def main():
     m = Model(a.subtask.upper(), categoryCount[a.subtask])
     with tf.Session() as sess:
         #print("Beginning training")
-        m.train(sess, trainData[a.subtask], 10, 1)
+        m.train(sess, trainData[a.subtask], 10, ROUNDS)
         #print("Beginning testing")
         print("calling test with ", testData[a.subtask])
         m.test(sess, testData[a.subtask])
@@ -94,13 +96,12 @@ class Model:
 
         print("Word Vocab Size: {}".format(len(self.word_index_map) + 2))
 
-
         batchrounds = math.ceil(len(tweets) * batchrounds / batchsize)
         tchunker = c.Chunker(tweets)
         
         self.sentinet = sentimentnet.create_graph(self.categories, len(self.word_index_map) + 2, w.feat_len())
         
-        tw_input, tf_input, graph, variables = self.sentinet
+        tw_input, tf_input, graph, keep_prob, variables = self.sentinet
         
 
         expected_input, optimize_graph = netutil.optimize(graph, self.categories)
@@ -119,16 +120,16 @@ class Model:
             tweetbatch = tchunker.batch(batchsize)
             words, feats, expected = wtv.sig_vec(tweetbatch, self.word_index_map, self.task)
 
-            sess.run(trainfn, feed_dict={tw_input: words, tf_input: feats, expected_input: expected})
+            sess.run(trainfn, feed_dict={tw_input: words, tf_input: feats, expected_input: expected, keep_prob: KEEP_PROB})
             if i % 10 == 0:
-                accuracy_f = sess.run(accuracy, feed_dict={tw_input: words, tf_input: feats, expected_input: expected})
+                accuracy_f = sess.run(accuracy, feed_dict={tw_input: words, tf_input: feats, expected_input: expected, keep_prob: 1})
                 print("accuracy: {:.1f} @ {}".format(accuracy_f, i))
 
     def test(self, sess, files):
         tweets = self.loadTweets(files, False)
         correct_results = 0
         print("test categories", self.categories)
-        tw_input, tf_input, graph, variables = self.sentinet
+        tw_input, tf_input, graph, keep_prob, variables = self.sentinet
 
         y_ = tf.placeholder(tf.int32, [None, self.categories])
         validation_graph = tf.equal(tf.argmax(graph, 1), tf.argmax(y_, 1))
@@ -137,7 +138,7 @@ class Model:
         accuracy = tf.reduce_mean(tf.cast(validation_graph, tf.float32))
         w_vals, f_vals, expected = wtv.sig_vec(tweets, self.word_index_map, self.task)
     
-        prediction_v, accuracy_v = sess.run([prediction, accuracy], feed_dict={tw_input: w_vals, tf_input: f_vals, y_: expected})
+        prediction_v, accuracy_v = sess.run([prediction, accuracy], feed_dict={tw_input: w_vals, tf_input: f_vals, y_: expected, keep_prob: 1})
         print(accuracy_v)
         with open('results.txt', 'w') as rf:
             for idx in range(len(prediction_v)):

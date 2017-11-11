@@ -1,11 +1,9 @@
 import tensorflow as tf
 
 TWEET_WL_MAX = 70
-EMBEDDING_SIZE = 5
-FILTER_SIZES = [4] #, 4, 5]
-#NUM_FILTERS = 15
+EMBEDDING_SIZE = 32
 
-JOIN_LAYER_SIZE = 4 
+JOIN_LAYER_SIZE = 32
 
 def create_graph(categories, vocab_size, feature_size):
     variables = []
@@ -16,11 +14,11 @@ def create_graph(categories, vocab_size, feature_size):
 
     # EMBEDDING
     W = tf.Variable(
-            tf.random_uniform([vocab_size, EMBEDDING_SIZE], -1.0, 1.0))
+            tf.random_normal([vocab_size, EMBEDDING_SIZE]))
     variables.append(W)
     embedded_chars = tf.nn.embedding_lookup(W, tweet_w_input)
 
-    W_embed = tf.Variable(tf.truncated_normal([5, EMBEDDING_SIZE, JOIN_LAYER_SIZE], stddev=0.2))
+    W_embed = tf.Variable(tf.truncated_normal([20, EMBEDDING_SIZE, JOIN_LAYER_SIZE], stddev=0.2))
     variables.append(W_embed)
     b_embed = tf.Variable(tf.truncated_normal([JOIN_LAYER_SIZE], stddev=0.2))
     variables.append(b_embed)
@@ -32,7 +30,7 @@ def create_graph(categories, vocab_size, feature_size):
             padding="VALID")
     embed_biased = tf.nn.bias_add(embed_reshape, b_embed)
 
-    W_feat = tf.Variable(tf.truncated_normal([5, feature_size, JOIN_LAYER_SIZE], stddev=0.1))
+    W_feat = tf.Variable(tf.truncated_normal([20, feature_size, JOIN_LAYER_SIZE], stddev=0.1))
     variables.append(W_feat)
     b_feat = tf.Variable(tf.truncated_normal([JOIN_LAYER_SIZE], stddev=0.1))
     variables.append(b_feat)
@@ -58,16 +56,19 @@ def create_graph(categories, vocab_size, feature_size):
         padding="VALID")
     conjoin_bias = tf.nn.bias_add(conjoin, b_join)
 
-    end_width = (TWEET_WL_MAX - 5 + 1)* JOIN_LAYER_SIZE 
+    end_width = (TWEET_WL_MAX - 20 + 1)* JOIN_LAYER_SIZE 
 
     reduxd = tf.nn.relu(tf.reshape(conjoin_bias, [-1, end_width]))
+
+    keep_prob = tf.placeholder(tf.float32)
+    reduxd_drop = tf.nn.dropout(reduxd, keep_prob)
 
     W_final = tf.Variable(tf.truncated_normal([end_width, categories], stddev=1))
     variables.append(W_final)
     b_final = tf.Variable(tf.zeros([categories]))
     variables.append(b_final)
 
-    final = tf.nn.bias_add(tf.matmul(reduxd, W_final), b_final)
+    final = tf.nn.bias_add(tf.matmul(reduxd_drop, W_final), b_final)
 
-    return (tweet_w_input, tweet_f_input, final, variables)
+    return (tweet_w_input, tweet_f_input, final, keep_prob, variables)
 
