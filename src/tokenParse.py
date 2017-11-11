@@ -23,6 +23,13 @@ POSITIVE_F = words.new_feat()
 NEGATIVE_F = words.new_feat()
 OBJECTIVE_F = words.new_feat()
 
+CCLEFT_F = words.new_feat()
+CCRIGHT_F = words.new_feat()
+CCSLEFT_F = words.new_feat()
+CCSRIGHT_F = words.new_feat()
+DTXLEFT_F = words.new_feat()
+DTXRIGHT_F = words.new_feat()
+
 BROWN_TO_SYNSET = {
   "NN": 'n',
   "NN$": 'n',
@@ -183,4 +190,7 @@ def annotate_sentiment(token):
       token.attrs[POSITIVE_F] = 0
       token.attrs[NEGATIVE_F] = 0
       token.attrs[OBJECTIVE_F] = 0
+
+
+def annotate_Conjunctions(toke)
   
