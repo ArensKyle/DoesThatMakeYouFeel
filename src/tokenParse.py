@@ -50,5 +50,8 @@ def annotateHashtag(token):
 #correct or incorrect spelling as a feature
 def annotateSpelling(token):
   '''Take a token, and check if is spelled correctly'''
-  token.attrs[SPELL_F] = int(spellDict.check(token.word))
+  if ("@" not in token.word):
+    token.attrs[SPELL_F] = int(spellDict.check(token.word))
+  else:
+    token.attrs[SPELL_F] = 1
   
