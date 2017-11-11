@@ -1,5 +1,7 @@
 import enchant, nltk, words
 
+from nltk.corpus import sentiwordnet as swn
+
 SPELL_F = words.new_feat()
 HASHTAG_F = words.new_feat()
 
@@ -9,7 +11,12 @@ EXCLAMATION_F = words.new_feat()
 PERIODPERIOD_F = words.new_feat()
 ELLIPSIS_F = words.new_feat()
 
-spellDict = enchant.Dict("en_US")
+POSITIVE_F = words.new_feat()
+NEGATIVE_F = words.new_feat()
+OBJECTIVE_F = words.new_feat()
+
+
+spell_dict = enchant.Dict("en_US")
 
 PUNCTUATION_SEPERATORS = ['.','..','...','!','?']
 PUNCTUATION_MAPPING = {
@@ -44,7 +51,7 @@ def create_and_annotate_words(tokens):
   update_pos_tags(w_tokens)
 
   # now annotate punctuation.
-  annotate_punctuations(w_tokens)
+  annotate_punctuations_and_sentiment(w_tokens)
   return w_tokens
 
 def get_words_from_token_list(token_list):
@@ -60,12 +67,12 @@ def update_pos_tags(token_list):
   for idx in range(len(token_list)):
     token_list[idx].pos = pos_tags[idx][1]
 
-def annotate_punctuations(token_list):
+def annotate_punctuations_and_sentiment(token_list):
   ''' takes in a list of tokens and annotates the punctuation vector '''
   lastPuncGroupIdx = 0
   for idx in range(len(token_list)):
     annotatePunctuation(idx, lastPuncGroupIdx, token_list)
-
+    annotate_sentiment(token_list[idx])
     #allows for the grouping of punctuation to account for repeating punctuation
     if (token_list[idx].word not in PUNCTUATION_SEPERATORS and idx > 0 and token_list[idx - 1].word in PUNCTUATION_SEPERATORS):
       # print("updating lastPuncGroup")
@@ -108,7 +115,7 @@ def annotateSpelling(token):
 
 def annotate_and_correct_spelling(token):
   '''Takes a token, performs spell check then naively corrects spelling if mispelled'''
-  if (((token.word[0] != "#" and token.word[0] != "@") and len(token.word) > 1) or token.word != 'httpstco'):
+  if (((token.word[0] != "#" and token.word[0] != "@") and len(token.word) > 1) and token.word != 'httpstco'):
     # ignore #hashtags @mentions, 1 letter words, and our httpstco string.
     spelledCorrectly = spellDict.check(token.word)
     token.attrs[SPELL_F] = int(spelledCorrectly)
@@ -122,3 +129,9 @@ def annotate_and_correct_spelling(token):
   else:
     token.attrs[SPELL_F] = 1
   
+def annotate_sentiment(token):
+  '''Take a token and assign it a naive sentiment value'''
+  breakdown = swn.senti_synsets(token.word, token.pos)
+  token.attrs[POSITIVE_F] = breakdown.pos_score()
+  token.attrs[NEGATIVE_F] = breakdown.neg_score()
+  token.attrs[OBJECTIVE_F] = breakdown.obj_score()
