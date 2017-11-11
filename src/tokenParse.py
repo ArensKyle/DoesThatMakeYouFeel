@@ -11,7 +11,7 @@ EXCLAMATION_F = words.new_feat()
 PERIODPERIOD_F = words.new_feat()
 ELLIPSIS_F = words.new_feat()
 
-d = enchant.Dict("en_US")
+spellDict = enchant.Dict("en_US")
 
 PUNCTUATION_SEPERATORS = ['.','..','...','!','?']
 PUNCTUATION_MAPPING = {
@@ -50,5 +50,5 @@ def annotateHashtag(token):
 #correct or incorrect spelling as a feature
 def annotateSpelling(token):
   '''Take a token, and check if is spelled correctly'''
-  token.attrs[SPELL_F] = int(d.check(token.word))
+  token.attrs[SPELL_F] = int(spellDict.check(token.word))
   
