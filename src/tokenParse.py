@@ -49,17 +49,6 @@ BROWN_TO_SYNSET = {
   "RBS": 'r',
 }
 
-'''else if (tail.contains("VB") || tail.contains("VBD")
-            || tail.contains("VBG") || tail.contains("VBN")
-            || tail.contains("VBP") || tail.contains("VBZ")) 
-        return _dict.get(word + "#v"); 
-    else if (tail.contains("JJ") || tail.contains("JJR")
-            || tail.contains("JJS"))
-        return _dict.get(word + "#a");
-    else if (tail.contains("RB") || tail.contains("RBR")
-            || tail.contains("RBS"))
-        return _dict.get(word + "#r");'''
-
 spell_dict = enchant.Dict("en_US")
 
 PUNCTUATION_SEPERATORS = ['.','..','...','!','?']
@@ -95,7 +84,7 @@ def create_and_annotate_words(tokens):
   update_pos_tags(w_tokens)
 
   # now annotate punctuation.
-  annotate_punctuations_and_sentiment(w_tokens)
+  annotate_remaining_features(w_tokens)
   return w_tokens
 
 def get_words_from_token_list(token_list):
@@ -111,16 +100,22 @@ def update_pos_tags(token_list):
   for idx in range(len(token_list)):
     token_list[idx].pos = pos_tags[idx][1]
 
-def annotate_punctuations_and_sentiment(token_list):
+def annotate_remaining_features(token_list):
   ''' takes in a list of tokens and annotates the punctuation vector '''
   lastPuncGroupIdx = 0
+  lastCCGroupIdx = 0
   for idx in range(len(token_list)):
     annotatePunctuation(idx, lastPuncGroupIdx, token_list)
+    annotate_conjunction(idx, lastCCGroupIdx, token_list)
     annotate_sentiment(token_list[idx])
-    #allows for the grouping of punctuation to account for repeating punctuation
+   
+    # allows for the grouping of punctuation to account for repeating punctuation
     if (token_list[idx].word not in PUNCTUATION_SEPERATORS and idx > 0 and token_list[idx - 1].word in PUNCTUATION_SEPERATORS):
-      # print("updating lastPuncGroup")
       lastPuncGroupIdx = idx
+    if (token_list[idx].pos == 'CC'):
+      lastCCGroupIdx = idx
+    if idx == len(token_list) - 1:
+      annotate_CC_right(idx, lastCCGroupIdx, token_list)
 
 #top level token parsing function. Calls more pecific functions
 def annotateTokens(tokens):
@@ -129,7 +124,6 @@ def annotateTokens(tokens):
     annotateHashtag(tokens[idx])
     annotateSpelling(tokens[idx])
     annotatePunctuation(idx, lastPuncGroupIdx, tokens)
-
     #allows for the grouping of punctuation to account for repeating punctuation
     if (tokens[idx].word not in PUNCTUATION_SEPERATORS and idx > 0 and tokens[idx - 1].word in PUNCTUATION_SEPERATORS):
       # print("updating lastPuncGroup")
@@ -141,6 +135,20 @@ def annotatePunctuation(currentIdx, lastGroupIdx, tokens):
     attr_idx = PUNCTUATION_MAPPING[tokens[currentIdx].word]
     for idx in range(lastGroupIdx, currentIdx):
       tokens[idx].attrs[attr_idx] += 1
+
+def annotate_conjunction(currentIdx, lastGroupIdx, tokens):
+  if (tokens[currentIdx].pos == 'CC'):
+    for idx in range(lastGroupIdx, currentIdx):
+      tokens[idx].attrs[CCLEFT_F] += 1
+      if (lastGroupIdx > 0):
+        tokens[idx].attrs[CCRIGHT_F] += 1
+
+def annotate_CC_right(currentIdx, lastGroupIdx, tokens):
+  ''' if the lastGroupIdx is greater than 0, annotate the CCRIGHT_F for the words that need it.'''
+  if (lastGroupIdx > 0):
+    for idx in range(lastGroupIdx, currentIdx + 1):
+      tokens[idx].attrs[CCRIGHT_F] += 1
+    
 
 #weight hashtags
 def annotateHashtag(token):
@@ -191,6 +199,3 @@ def annotate_sentiment(token):
       token.attrs[NEGATIVE_F] = 0
       token.attrs[OBJECTIVE_F] = 0
 
-
-def annotate_Conjunctions(toke)
-  
