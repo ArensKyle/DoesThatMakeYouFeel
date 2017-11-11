@@ -64,6 +64,7 @@ def annotateSpelling(token):
   
 def annotateSentiment(token):
   '''Take a token and assign it a naive sentiment value'''
-  token.attrs[POSITIVE_F] = 
-  token.attrs[NEGATIVE_F] = 
-  token.attrs[OBJECTIVE_F] = 
+  breakdown = swn.senti_synsets(token.word, token.pos)
+  token.attrs[POSITIVE_F] = breakdown.pos_score()
+  token.attrs[NEGATIVE_F] = breakdown.neg_score()
+  token.attrs[OBJECTIVE_F] = breakdown.obj_score()
