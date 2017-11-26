@@ -100,7 +100,7 @@ class Model:
         batchrounds = math.ceil(len(tweets) * batchrounds / batchsize)
         tchunker = c.Chunker(tweets)
         
-        self.sentinet = sentimentnet.create_graph(self.categories, len(self.word_index_map) + 2, w.feat_len())
+        self.sentinet = sentimentnet.create_graph(self.categories, len(self.word_index_map) + 3, w.feat_len())
         
         tw_input, tf_input, graph, keep_prob, variables = self.sentinet
         
