@@ -47,11 +47,13 @@ def sig_vec(tweets, sig_words, task):
         expected_map[tweet_index, expected_index] = 1
         #read each token and substitute in it's integer value
         for token in record.tokens:
+            idx = 1
+            if (task == "B" or task == "C") and record.subject.lower() == token.word.lower():
+                idx = 2
             if (sig_words.get(token.word + "_" + token.pos)):
-                word_map[tweet_index, word_index] = sig_words[token.word + "_" + token.pos]
-            else:
-                #1 is the value used for infrequent words
-                word_map[tweet_index, word_index] = 1
+                idx = sig_words[token.word + "_" + token.pos]
+            
+            word_map[tweet_index, word_index] = idx 
 
             #create 3rd dimensional vectors to hold feature values corresponding
             #to each word in a tweet

@@ -84,7 +84,8 @@ class Model:
         #turn bag of words into index of significant words for NN
         #word index 0 = padding
         #word index 1 = never seen
-        word_index = 2
+        #word index 2 = reserved for subject
+        word_index = 3
         for word in self.bag_of_words:
             if(self.bag_of_words[word] > SIGNIFICANT):
                 self.word_index_map[word] = word_index
