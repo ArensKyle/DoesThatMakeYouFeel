@@ -33,6 +33,12 @@ testData = {
     "c": "../data/Subtasks_CE/twitter-2016devtest-CE.txt.download"
 }
 
+competeData = {
+    "a": "../data/Subtask_A/twitter-2016test-A.txt.download",
+    "b": "../data/Subtasks_BD/twitter-2016test-BD.txt.download",
+    "c": "../data/Subtasks_CE/twitter-2016test-CE.txt.download"
+}
+
 categoryMapping = {
     "A": {
         2: "positive",
@@ -61,8 +67,8 @@ def main():
         #print("Beginning training")
         m.train(sess, trainData[a.subtask], 10, ROUNDS)
         #print("Beginning testing")
-        print("calling test with ", testData[a.subtask])
-        m.test(sess, testData[a.subtask])
+        print("calling test with ", competeData[a.subtask])
+        m.test(sess, competeData[a.subtask])
 
 class Model:
     def __init__(self, task, categories):
